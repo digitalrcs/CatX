@@ -11,8 +11,8 @@ jobs:
   release:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: 8.0.x
       - name: Publish
@@ -21,7 +21,7 @@ jobs:
         shell: pwsh
         run: Compress-Archive -Path publish/CatX.exe -DestinationPath CatX-win-x64.zip
       - name: Create GitHub release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: CatX-win-x64.zip
           generate_release_notes: true

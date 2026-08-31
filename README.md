@@ -5,6 +5,17 @@ CatX is a friendly Windows 11 keyboard guard for anyone whose cat believes a key
 ![Windows 11](https://img.shields.io/badge/Windows-11-0078D4?logo=windows11&logoColor=white)
 ![.NET 8](https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet)
 ![License](https://img.shields.io/badge/license-MIT-3E8878)
+[![Build](https://github.com/digitalrcs/CatX/actions/workflows/build.yml/badge.svg)](https://github.com/digitalrcs/CatX/actions/workflows/build.yml)
+
+## Download and use
+
+1. Open the [latest CatX release](https://github.com/digitalrcs/CatX/releases/latest).
+2. Download `CatX-win-x64.zip` and extract it.
+3. Run `CatX.exe` on a 64-bit Windows 11 PC.
+4. Choose a cat, recovery shortcut, and movement interval.
+5. Press **Enable keyboard guard** and immediately test the displayed shortcut.
+
+CatX is currently distributed as an unsigned community application. Windows SmartScreen may show **Windows protected your PC** on first launch. Confirm that the publisher is unknown, select **More info**, and choose **Run anyway** only if the download came from this repository. A future release may be code-signed.
 
 ## Features
 
@@ -63,6 +74,22 @@ src/CatX/
 ## Contributing
 
 Bug reports and pull requests are welcome. Please read [CONTRIBUTING.md](CONTRIBUTING.md) before making a change. For security concerns, follow [SECURITY.md](SECURITY.md).
+
+Additional project information:
+
+- [Architecture](docs/ARCHITECTURE.md)
+- [Troubleshooting](docs/TROUBLESHOOTING.md)
+- [Privacy](docs/PRIVACY.md)
+- [Roadmap](ROADMAP.md)
+- [Changelog](CHANGELOG.md)
+- [Support](SUPPORT.md)
+
+## Current limitations
+
+- The release is for 64-bit Windows 11 (`win-x64`). ARM64 is not packaged yet.
+- CatX protects the current interactive desktop session; it is not a driver or Windows service.
+- Cat artwork is vector-based and built into the application. Importing custom animation files is planned, not yet implemented.
+- Release executables are not currently code-signed.
 
 ## Artwork and naming
 
