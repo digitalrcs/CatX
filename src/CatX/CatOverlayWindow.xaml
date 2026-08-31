@@ -1,0 +1,32 @@
+<Window x:Class="CatX.CatOverlayWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Width="230" Height="170" WindowStyle="None" AllowsTransparency="True"
+        Background="Transparent" Topmost="True" ShowInTaskbar="False"
+        ResizeMode="NoResize" IsHitTestVisible="False" Focusable="False">
+    <Canvas x:Name="Stage" Width="230" Height="170" RenderTransformOrigin="0.5,0.5">
+        <Canvas.RenderTransform><ScaleTransform x:Name="DirectionTransform" ScaleX="1"/></Canvas.RenderTransform>
+        <Ellipse Width="168" Height="18" Canvas.Left="31" Canvas.Top="146" Fill="#28000000"/>
+        <Canvas x:Name="CatBody" Canvas.Left="4" Canvas.Top="2">
+            <Path x:Name="Tail" Data="M 172,92 C 221,87 220,43 191,46 C 177,48 181,66 193,64" Stroke="#F49A4A" StrokeThickness="14" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Fill="Transparent"/>
+            <Ellipse x:Name="Body" Width="138" Height="78" Canvas.Left="56" Canvas.Top="70" Fill="#F49A4A"/>
+            <Ellipse x:Name="Chest" Width="63" Height="58" Canvas.Left="59" Canvas.Top="88" Fill="#FFC982" Opacity="0.65"/>
+            <Ellipse x:Name="Head" Width="89" Height="83" Canvas.Left="18" Canvas.Top="45" Fill="#F49A4A"/>
+            <Polygon x:Name="LeftEar" Points="27,60 37,18 60,54" Fill="#F49A4A"/>
+            <Polygon x:Name="RightEar" Points="70,52 95,21 99,69" Fill="#F49A4A"/>
+            <Polygon Points="34,55 39,34 50,55" Fill="#E97963"/><Polygon Points="78,51 92,34 93,60" Fill="#E97963"/>
+            <Ellipse Width="13" Height="18" Canvas.Left="43" Canvas.Top="72" Fill="#253238"/><Ellipse Width="13" Height="18" Canvas.Left="73" Canvas.Top="72" Fill="#253238"/>
+            <Ellipse Width="5" Height="5" Canvas.Left="47" Canvas.Top="75" Fill="White"/><Ellipse Width="5" Height="5" Canvas.Left="77" Canvas.Top="75" Fill="White"/>
+            <Polygon Points="57,94 69,94 63,102" Fill="#A84F59"/>
+            <Path Data="M 63,102 Q 63,111 53,108 M 63,102 Q 65,111 74,108 M 47,99 L 15,94 M 47,107 L 12,113 M 79,99 L 111,94 M 79,107 L 113,114" Stroke="#253238" StrokeThickness="2.5" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Fill="Transparent"/>
+            <Rectangle x:Name="FrontLeg" Width="25" Height="48" RadiusX="12" Canvas.Left="76" Canvas.Top="116" Fill="#F49A4A" RenderTransformOrigin="0.5,0">
+                <Rectangle.RenderTransform><RotateTransform x:Name="FrontLegRotate" Angle="7"/></Rectangle.RenderTransform>
+            </Rectangle>
+            <Rectangle x:Name="BackLeg" Width="25" Height="48" RadiusX="12" Canvas.Left="151" Canvas.Top="116" Fill="#F49A4A" RenderTransformOrigin="0.5,0">
+                <Rectangle.RenderTransform><RotateTransform x:Name="BackLegRotate" Angle="-7"/></Rectangle.RenderTransform>
+            </Rectangle>
+            <Path x:Name="PatchOne" Data="M 75,69 Q 105,57 123,78 Q 105,99 79,91 Z" Fill="Transparent"/>
+            <Path x:Name="PatchTwo" Data="M 143,76 Q 176,65 187,93 L 181,111 Q 153,107 143,76 Z" Fill="Transparent"/>
+        </Canvas>
+    </Canvas>
+</Window>

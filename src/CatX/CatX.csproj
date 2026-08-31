@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>CatX</AssemblyName>
+    <RootNamespace>CatX</RootNamespace>
+    <Version>1.0.0</Version>
+    <Authors>CatX contributors</Authors>
+    <Description>A friendly Windows keyboard guard with animated desktop cats.</Description>
+    <RepositoryUrl>https://github.com/digitalrcs/CatX</RepositoryUrl>
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>true</SelfContained>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+  </PropertyGroup>
+</Project>

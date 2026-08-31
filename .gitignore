@@ -1,0 +1,30 @@
+# Build output
+bin/
+obj/
+publish/
+artifacts/
+
+# IDE and user state
+.vs/
+.vscode/*.log
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# JetBrains
+.idea/
+*.sln.iml
+
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Local settings and signing material
+settings.json
+*.pfx
+*.snk
+*.cer
+*.key
+*.secrets.json

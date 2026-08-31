@@ -1,0 +1,23 @@
+<Application x:Class="CatX.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <Color x:Key="Ink">#253238</Color>
+        <Color x:Key="Cream">#FFF8E8</Color>
+        <Color x:Key="Coral">#F46F55</Color>
+        <SolidColorBrush x:Key="InkBrush" Color="{StaticResource Ink}"/>
+        <SolidColorBrush x:Key="CreamBrush" Color="{StaticResource Cream}"/>
+        <SolidColorBrush x:Key="CoralBrush" Color="{StaticResource Coral}"/>
+        <Style TargetType="Button">
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Padding" Value="18,11"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+        <Style TargetType="ComboBox">
+            <Setter Property="Padding" Value="10,7"/>
+            <Setter Property="FontSize" Value="14"/>
+        </Style>
+    </Application.Resources>
+</Application>
