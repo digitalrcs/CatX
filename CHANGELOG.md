@@ -2,6 +2,23 @@
 
 All notable CatX changes are documented here. The project follows [Semantic Versioning](https://semver.org/).
 
+## [1.0.2] - 2026-09-01
+
+### Fixed
+
+- Cats now face the direction they travel and use smoother eased movement transitions.
+- Auto-lock now resets on keyboard or mouse activity and activates only after the selected period with no input.
+
+### Changed
+
+- Reduced the main window to a compact 800 by 560 layout while keeping every setting visible.
+
+### Added
+
+- DigitalRCS branding, a cat application icon, a branded user guide, and a per-user Windows installer definition.
+- System-tray minimization with Open, Disable keyboard guard, and Exit commands.
+- Regression tests for cat direction and inactivity timing.
+
 ## [1.0.1] - 2026-08-31
 
 ### Fixed
@@ -30,3 +47,4 @@ All notable CatX changes are documented here. The project follows [Semantic Vers
 
 [1.0.0]: https://github.com/digitalrcs/CatX/releases/tag/v1.0.0
 [1.0.1]: https://github.com/digitalrcs/CatX/releases/tag/v1.0.1
+[1.0.2]: https://github.com/digitalrcs/CatX/releases/tag/v1.0.2

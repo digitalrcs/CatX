@@ -17,7 +17,7 @@ public partial class CatOverlayWindow : Window
     private const int WsExToolWindow = 0x80;
     private readonly Random _random = new();
     private readonly DispatcherTimer _roamTimer = new();
-    private readonly DispatcherTimer _stepTimer = new() { Interval = TimeSpan.FromMilliseconds(310) };
+    private readonly DispatcherTimer _stepTimer = new() { Interval = TimeSpan.FromMilliseconds(240) };
     private bool _step;
 
     public CatOverlayWindow(AppSettings settings)
@@ -78,25 +78,29 @@ public partial class CatOverlayWindow : Window
         var maxY = SystemParameters.VirtualScreenTop + Math.Max(10, SystemParameters.VirtualScreenHeight - Height - 20);
         var targetX = minX + _random.NextDouble() * Math.Max(1, maxX - minX);
         var targetY = minY + _random.NextDouble() * Math.Max(1, maxY - minY);
-        DirectionTransform.ScaleX = targetX >= Left ? 1 : -1;
+        // Every built-in cat is drawn facing left. Mirror it only when travelling right.
+        DirectionTransform.ScaleX = ScaleForTravel(Left, targetX);
 
         var duration = TimeSpan.FromSeconds(Math.Clamp(Math.Abs(targetX - Left) / 260, 1.4, 4.5));
-        BeginAnimation(LeftProperty, new DoubleAnimation(targetX, duration) { EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseInOut } });
+        var horizontalMove = new DoubleAnimation(targetX, duration) { EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseInOut } };
+        BeginAnimation(LeftProperty, horizontalMove);
         BeginAnimation(TopProperty, new DoubleAnimation(targetY, duration) { EasingFunction = new SineEase { EasingMode = EasingMode.EaseInOut } });
     }
 
     private void AnimateStep()
     {
         _step = !_step;
-        var duration = TimeSpan.FromMilliseconds(260);
-        CatBody.BeginAnimation(Canvas.TopProperty, new DoubleAnimation(_step ? -4 : 2, duration));
-        FrontLegRotate.BeginAnimation(System.Windows.Media.RotateTransform.AngleProperty, new DoubleAnimation(_step ? -15 : 15, duration));
-        BackLegRotate.BeginAnimation(System.Windows.Media.RotateTransform.AngleProperty, new DoubleAnimation(_step ? 15 : -15, duration));
+        var duration = TimeSpan.FromMilliseconds(240);
+        var easing = new SineEase { EasingMode = EasingMode.EaseInOut };
+        CatBody.BeginAnimation(Canvas.TopProperty, new DoubleAnimation(_step ? -4 : 2, duration) { EasingFunction = easing });
+        FrontLegRotate.BeginAnimation(System.Windows.Media.RotateTransform.AngleProperty, new DoubleAnimation(_step ? -15 : 15, duration) { EasingFunction = easing });
+        BackLegRotate.BeginAnimation(System.Windows.Media.RotateTransform.AngleProperty, new DoubleAnimation(_step ? 15 : -15, duration) { EasingFunction = easing });
     }
 
-    private static SolidColorBrush Brush(string color) => new((Color)ColorConverter.ConvertFromString(color));
-    private sealed record CatPalette(string Base, string Chest, string PatchOne, string PatchTwo);
+    internal static double ScaleForTravel(double currentX, double targetX) => targetX >= currentX ? -1 : 1;
 
+    private static SolidColorBrush Brush(string color) => new((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(color));
+    private sealed record CatPalette(string Base, string Chest, string PatchOne, string PatchTwo);
     [DllImport("user32.dll", EntryPoint = "GetWindowLongPtrW")]
     private static extern IntPtr GetWindowLongPtr(IntPtr window, int index);
 

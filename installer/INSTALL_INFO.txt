@@ -1,0 +1,8 @@
+CatX Keyboard Guard
+Dan Roberts - DigitalRCS
+
+CatX temporarily ignores ordinary keyboard input while keeping the mouse available.
+
+Before enabling the guard, choose and test one of the recovery shortcuts shown in CatX. The mouse is never blocked, and Windows Ctrl + Alt + Delete remains available.
+
+CatX runs locally, requires no account, makes no network requests, and collects no data.

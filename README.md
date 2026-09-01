@@ -10,8 +10,8 @@ CatX is a friendly Windows 11 keyboard guard for anyone whose cat believes a key
 ## Download and use
 
 1. Open the [latest CatX release](https://github.com/digitalrcs/CatX/releases/latest).
-2. Download `CatX-win-x64.zip` and extract it.
-3. Run `CatX.exe` on a 64-bit Windows 11 PC.
+2. Download `CatX-Windows11-<version>.zip`, extract all files, and run `Setup.exe` for a normal Windows installation. The standalone installer and portable build may also be provided separately.
+3. Launch CatX on a 64-bit Windows 11 PC.
 4. Choose a cat, recovery shortcut, and movement interval.
 5. Press **Enable keyboard guard** and immediately test the displayed shortcut.
 
@@ -25,10 +25,11 @@ CatX is currently distributed as an unsigned community application. Windows Smar
 - Includes a **No cat** preference for keyboard-only protection.
 - Animates a click-through cat across the entire Windows virtual desktop, including multiple monitors.
 - Lets you choose how often the cat changes location.
-- Can automatically enable the guard after an optional 30-second, 1-minute, 5-minute, 15-minute, 30-minute, or 1-hour countdown.
+- Can automatically enable the guard after an optional inactivity period; keyboard or mouse activity resets the timer.
 - Saves preferences locally in `%LOCALAPPDATA%\CatX\settings.json`.
 - Makes no network requests, requires no account, and collects no data.
 - Keeps the mouse usable and cannot block Windows' secure `Ctrl + Alt + Delete` screen.
+- Minimizes to a cat icon in the Windows notification area with Open, Disable keyboard guard, and Exit commands.
 
 > [!IMPORTANT]
 > Test your recovery shortcut before leaving CatX enabled. If needed, use the mouse to select **Disable guard with mouse**, close CatX, or press `Ctrl + Alt + Delete` and use Windows' secure screen.
@@ -59,9 +60,11 @@ The self-contained executable will be `publish\CatX.exe`. It includes the .NET r
 
 ## How the safety model works
 
-CatX installs its keyboard hook only after you press **Enable keyboard guard** or an enabled auto-lock countdown expires. Because guarded modifier events are themselves suppressed, CatX tracks Ctrl, Alt, and Shift directly from the low-level hook rather than relying on Windows' post-event key state. The selected recovery chord is checked before the final key event is suppressed. When it matches, CatX immediately removes the hook and restores normal input. Closing the application also removes the hook.
+CatX installs its keyboard hook only after you press **Enable keyboard guard** or the selected auto-lock inactivity period expires. While the guard is inactive, CatX reads Windows' last-input timestamp; any keyboard or mouse activity resets the countdown. It does not record input content or mouse positions. Because guarded modifier events are themselves suppressed, CatX tracks Ctrl, Alt, and Shift directly from the low-level hook rather than relying on Windows' post-event key state. The selected recovery chord is checked before the final key event is suppressed. When it matches, CatX immediately removes the hook and restores normal input. Closing the application also removes the hook.
 
 Windows handles `Ctrl + Alt + Delete` outside normal user applications, so CatX cannot suppress it. CatX intentionally never blocks the mouse. It does not run as a service, start with Windows, or persist a lock after the process exits.
+
+Minimizing CatX hides its taskbar button and keeps it running in the Windows notification area. Right-click the cat icon to reopen CatX, disable an active keyboard guard, or exit the application. Double-clicking the icon also reopens the window.
 
 ## Project layout
 
@@ -80,6 +83,10 @@ Bug reports and pull requests are welcome. Please read [CONTRIBUTING.md](CONTRIB
 
 Additional project information:
 
+- [User guide](docs/USER_GUIDE.md)
+- [Printable PDF user guide](output/pdf/CatX-User-Guide-v1.0.2.pdf)
+- [GitHub wiki](https://github.com/digitalrcs/CatX/wiki)
+- [Windows packaging and signing](docs/PACKAGING.md)
 - [Architecture](docs/ARCHITECTURE.md)
 - [Troubleshooting](docs/TROUBLESHOOTING.md)
 - [Privacy](docs/PRIVACY.md)
@@ -96,7 +103,7 @@ Additional project information:
 
 ## Artwork and naming
 
-All cats in CatX are original vector illustrations created for this project. CatX is not affiliated with Garfield, Paws, Inc., or any other fictional-cat property.
+All cats in CatX are original artwork created for this project. CatX is not affiliated with Garfield, Paws, Inc., or any other fictional-cat property.
 
 ## License
 

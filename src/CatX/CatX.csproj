@@ -3,17 +3,29 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <AssemblyName>CatX</AssemblyName>
     <RootNamespace>CatX</RootNamespace>
-    <Version>1.0.1</Version>
-    <Authors>CatX contributors</Authors>
+    <Version>1.0.2</Version>
+    <Authors>Dan Roberts</Authors>
+    <Company>Dan Roberts DigitalRCS</Company>
+    <Product>CatX Keyboard Guard</Product>
+    <Copyright>Copyright © 2026 Dan Roberts DigitalRCS</Copyright>
     <Description>A friendly Windows keyboard guard with animated desktop cats.</Description>
     <RepositoryUrl>https://github.com/digitalrcs/CatX</RepositoryUrl>
+    <ApplicationIcon>Assets\CatX.ico</ApplicationIcon>
     <PublishSingleFile>true</PublishSingleFile>
     <SelfContained>true</SelfContained>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Assets\*.png" />
+    <None Remove="Assets\CatX.ico" />
+    <Resource Include="Assets\*.png" />
+    <Resource Include="Assets\CatX.ico" />
+  </ItemGroup>
 </Project>

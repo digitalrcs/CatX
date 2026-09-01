@@ -3,6 +3,9 @@ bin/
 obj/
 publish/
 artifacts/
+dist/
+tmp/
+output/pdf/CatX-User-Guide.pdf
 
 # IDE and user state
 .vs/

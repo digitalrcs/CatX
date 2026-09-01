@@ -19,7 +19,7 @@ Version 1.0.1 fixed modifier tracking while input is suppressed. If you are usin
 
 ## CatX locks again after I unlock it
 
-Check **Auto-lock after** in the main window. When enabled, the countdown starts again after an unlock so protection returns automatically. Select **Off** to require manual activation.
+Check **Auto-lock after no activity** in the main window. When enabled, every keyboard or mouse action resets the countdown. Protection returns only after the selected period with no input. Select **Off** to require manual activation.
 
 ## Windows SmartScreen appears
 
@@ -35,6 +35,10 @@ CatX releases are not currently code-signed. Verify that the ZIP came from `http
 ## Preferences reset
 
 CatX stores preferences in `%LOCALAPPDATA%\CatX\settings.json`. If it is invalid or inaccessible, CatX uses defaults. Closing CatX, deleting that file, and reopening the app resets preferences safely.
+
+## CatX disappeared after minimizing
+
+CatX remains running in the Windows notification area instead of the taskbar. Select the hidden-icons arrow if needed, then find the CatX cat icon. Double-click it to reopen CatX, or right-click it to disable the keyboard guard or exit.
 
 ## Reporting a problem
 

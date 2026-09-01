@@ -1,19 +1,21 @@
 <Window x:Class="CatX.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="CatX Keyboard Guard" Height="680" Width="940"
-        MinHeight="620" MinWidth="860" WindowStartupLocation="CenterScreen"
+        Title="CatX Keyboard Guard" Height="560" Width="800"
+        Icon="Assets/catx-app-icon.png"
+        MinHeight="520" MinWidth="760" WindowStartupLocation="CenterScreen"
+        StateChanged="MainWindow_StateChanged"
         Background="#FFF8E8" Foreground="{StaticResource InkBrush}">
     <Grid>
-        <Grid.ColumnDefinitions><ColumnDefinition Width="1.08*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+        <Grid.ColumnDefinitions><ColumnDefinition Width="0.82*"/><ColumnDefinition Width="1.18*"/></Grid.ColumnDefinitions>
         <Grid Grid.Column="0" Background="#253238">
             <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-            <StackPanel Margin="48,42,36,0">
-                <TextBlock Text="CATX" Foreground="#F9BE58" FontSize="18" FontWeight="Bold"/>
-                <TextBlock Text="Paws off.&#x0a;Keys safe." Foreground="White" FontSize="54" FontWeight="Bold" LineHeight="56" Margin="0,20,0,0"/>
-                <TextBlock Text="A friendly keyboard guard for the moments when your cat decides your laptop is the best seat in the house." Foreground="#C8D3D1" FontSize="17" TextWrapping="Wrap" LineHeight="26" Margin="0,24,24,0"/>
+            <StackPanel Margin="30,26,24,0">
+                <TextBlock Text="CATX" Foreground="#F9BE58" FontSize="16" FontWeight="Bold"/>
+                <TextBlock Text="Paws off.&#x0a;Keys safe." Foreground="White" FontSize="42" FontWeight="Bold" LineHeight="44" Margin="0,12,0,0"/>
+                <TextBlock Text="A friendly keyboard guard for the moments when your cat decides your laptop is the best seat in the house." Foreground="#C8D3D1" FontSize="14" TextWrapping="Wrap" LineHeight="21" Margin="0,16,8,0"/>
             </StackPanel>
-            <Viewbox Grid.Row="1" Margin="60,30,60,20" Stretch="Uniform">
+            <Viewbox Grid.Row="1" Margin="52,18,52,12" Stretch="Uniform">
                 <Canvas Width="300" Height="225">
                     <Ellipse Width="190" Height="104" Canvas.Left="57" Canvas.Top="92" Fill="#F49A4A"/>
                     <Ellipse Width="112" Height="105" Canvas.Left="18" Canvas.Top="55" Fill="#F49A4A"/>
@@ -27,33 +29,46 @@
                     <Path Data="M 95,96 Q 78,79 61,96 M 110,119 L 142,111 M 109,130 L 144,137 M 49,119 L 16,111 M 50,130 L 14,138" Stroke="#253238" StrokeThickness="4" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Fill="Transparent"/>
                 </Canvas>
             </Viewbox>
-            <Border Grid.Row="2" Background="#1B272C" Padding="30,18"><TextBlock Foreground="#AFC0BD" Text="Runs locally • No account • No data collection" HorizontalAlignment="Center"/></Border>
+            <Border Grid.Row="2" Background="#1B272C" Padding="14,8">
+                <StackPanel HorizontalAlignment="Center">
+                    <TextBlock Foreground="#AFC0BD" Text="Local • Private • Offline" FontSize="11" HorizontalAlignment="Center"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,5,0,0">
+                        <Border Background="White" CornerRadius="4" Padding="3">
+                            <Image Source="Assets/DigitalRCS_Logo.png" Width="62" Height="36" Stretch="Uniform"/>
+                        </Border>
+                        <StackPanel Margin="8,0,0,0" VerticalAlignment="Center">
+                            <TextBlock Text="Dan Roberts" Foreground="White" FontSize="12" FontWeight="SemiBold"/>
+                            <TextBlock Text="DigitalRCS" Foreground="#7CD4D1" FontSize="11"/>
+                        </StackPanel>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
         </Grid>
-        <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
-            <StackPanel Margin="42,44,42,36">
-                <TextBlock Text="Set up your guard" FontSize="30" FontWeight="Bold"/>
-                <TextBlock Text="Choose a companion and a private recovery shortcut." Foreground="#657277" FontSize="15" Margin="0,8,0,30"/>
-                <TextBlock Text="DESKTOP CAT" Foreground="#7A8589" FontWeight="Bold" FontSize="12"/>
-                <ComboBox x:Name="CatStyleCombo" Margin="0,8,0,22" SelectionChanged="PreferenceChanged">
+        <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <StackPanel Margin="28,26,28,22">
+                <TextBlock Text="Set up your guard" FontSize="25" FontWeight="Bold"/>
+                <TextBlock Text="Choose a companion and a private recovery shortcut." Foreground="#657277" FontSize="13" Margin="0,4,0,18"/>
+                <TextBlock Text="DESKTOP CAT" Foreground="#7A8589" FontWeight="Bold" FontSize="11"/>
+                <ComboBox x:Name="CatStyleCombo" Margin="0,5,0,12" SelectionChanged="PreferenceChanged">
                     <ComboBoxItem Content="No cat"/><ComboBoxItem Content="Marmalade"/><ComboBoxItem Content="Midnight"/><ComboBoxItem Content="Snowball"/><ComboBoxItem Content="Tuxedo"/><ComboBoxItem Content="Calico"/>
                 </ComboBox>
-                <TextBlock Text="UNLOCK COMBINATION" Foreground="#7A8589" FontWeight="Bold" FontSize="12"/>
-                <ComboBox x:Name="UnlockCombo" Margin="0,8,0,22" SelectionChanged="PreferenceChanged">
+                <TextBlock Text="UNLOCK COMBINATION" Foreground="#7A8589" FontWeight="Bold" FontSize="11"/>
+                <ComboBox x:Name="UnlockCombo" Margin="0,5,0,12" SelectionChanged="PreferenceChanged">
                     <ComboBoxItem Content="Ctrl + Alt + K" Tag="CtrlAltK"/><ComboBoxItem Content="Ctrl + Shift + F12" Tag="CtrlShiftF12"/><ComboBoxItem Content="Alt + Shift + Pause" Tag="AltShiftPause"/>
                 </ComboBox>
-                <TextBlock Text="CAT MOVES EVERY" Foreground="#7A8589" FontWeight="Bold" FontSize="12"/>
-                <ComboBox x:Name="RoamCombo" Margin="0,8,0,28" SelectionChanged="PreferenceChanged">
+                <TextBlock Text="CAT MOVES EVERY" Foreground="#7A8589" FontWeight="Bold" FontSize="11"/>
+                <ComboBox x:Name="RoamCombo" Margin="0,5,0,12" SelectionChanged="PreferenceChanged">
                     <ComboBoxItem Content="5 seconds" Tag="5"/><ComboBoxItem Content="8 seconds" Tag="8"/><ComboBoxItem Content="15 seconds" Tag="15"/><ComboBoxItem Content="30 seconds" Tag="30"/>
                 </ComboBox>
-                <TextBlock Text="AUTO-LOCK AFTER" Foreground="#7A8589" FontWeight="Bold" FontSize="12"/>
-                <ComboBox x:Name="AutoLockCombo" Margin="0,8,0,28" SelectionChanged="PreferenceChanged">
+                <TextBlock Text="AUTO-LOCK AFTER NO ACTIVITY" Foreground="#7A8589" FontWeight="Bold" FontSize="11"/>
+                <ComboBox x:Name="AutoLockCombo" Margin="0,5,0,16" SelectionChanged="PreferenceChanged">
                     <ComboBoxItem Content="Off" Tag="0"/><ComboBoxItem Content="30 seconds" Tag="30"/><ComboBoxItem Content="1 minute" Tag="60"/><ComboBoxItem Content="5 minutes" Tag="300"/><ComboBoxItem Content="15 minutes" Tag="900"/><ComboBoxItem Content="30 minutes" Tag="1800"/><ComboBoxItem Content="1 hour" Tag="3600"/>
                 </ComboBox>
-                <Border x:Name="StatusCard" Background="#FFF0CC" CornerRadius="8" Padding="16" Margin="0,0,0,22">
-                    <StackPanel Orientation="Horizontal"><Ellipse x:Name="StatusDot" Width="12" Height="12" Fill="#D89B24" Margin="0,2,12,0" VerticalAlignment="Top"/><StackPanel><TextBlock x:Name="StatusTitle" Text="Guard is ready" FontWeight="Bold"/><TextBlock x:Name="StatusDetail" Text="Your keyboard is currently active." Foreground="#657277" Margin="0,4,0,0" TextWrapping="Wrap"/></StackPanel></StackPanel>
+                <Border x:Name="StatusCard" Background="#FFF0CC" CornerRadius="8" Padding="12" Margin="0,0,0,14">
+                    <StackPanel Orientation="Horizontal"><Ellipse x:Name="StatusDot" Width="10" Height="10" Fill="#D89B24" Margin="0,2,10,0" VerticalAlignment="Top"/><StackPanel><TextBlock x:Name="StatusTitle" Text="Guard is ready" FontSize="13" FontWeight="Bold"/><TextBlock x:Name="StatusDetail" Text="Your keyboard is currently active." Foreground="#657277" FontSize="12" Margin="0,3,0,0" TextWrapping="Wrap"/></StackPanel></StackPanel>
                 </Border>
-                <Button x:Name="GuardButton" Content="Enable keyboard guard" Background="{StaticResource CoralBrush}" Foreground="White" FontSize="16" Click="GuardButton_Click"/>
-                <TextBlock Text="Safety: Ctrl + Alt + Delete always remains available through Windows. The mouse is never blocked." Foreground="#7A8589" FontSize="12" TextWrapping="Wrap" TextAlignment="Center" Margin="10,14,10,0"/>
+                <Button x:Name="GuardButton" Content="Enable keyboard guard" Background="{StaticResource CoralBrush}" Foreground="White" FontSize="14" Click="GuardButton_Click"/>
+                <TextBlock Text="Safety: Ctrl + Alt + Delete remains available. The mouse is never blocked." Foreground="#7A8589" FontSize="11" TextWrapping="Wrap" TextAlignment="Center" Margin="8,10,8,0"/>
             </StackPanel>
         </ScrollViewer>
     </Grid>

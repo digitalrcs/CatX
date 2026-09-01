@@ -11,13 +11,13 @@
         <SolidColorBrush x:Key="CoralBrush" Color="{StaticResource Coral}"/>
         <Style TargetType="Button">
             <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Padding" Value="18,11"/>
+            <Setter Property="Padding" Value="16,9"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="BorderThickness" Value="0"/>
         </Style>
         <Style TargetType="ComboBox">
-            <Setter Property="Padding" Value="10,7"/>
-            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Padding" Value="9,5"/>
+            <Setter Property="FontSize" Value="13"/>
         </Style>
     </Application.Resources>
 </Application>
