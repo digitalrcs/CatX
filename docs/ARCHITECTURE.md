@@ -17,7 +17,7 @@ MainWindow
 
 ### Keyboard guard
 
-`KeyboardGuard` uses `SetWindowsHookEx` with `WH_KEYBOARD_LL`. While active, it returns a nonzero result for ordinary keyboard messages. It checks modifier state and the selected recovery key first. A matching recovery chord removes the hook immediately and then notifies the UI on a worker thread.
+`KeyboardGuard` uses `SetWindowsHookEx` with `WH_KEYBOARD_LL`. While active, it returns a nonzero result for ordinary keyboard messages. Because suppressed modifier messages may not appear in Windows' asynchronous key state, `UnlockChordState` records Ctrl, Alt, and Shift transitions from the hook itself. It checks that tracked state and the selected recovery key first. A matching recovery chord removes the hook immediately and then notifies the UI on a worker thread.
 
 The hook belongs to the CatX process. Windows removes it if the process exits. `MainWindow.OnClosing` also disposes it deliberately. CatX does not and cannot intercept the Windows secure-attention sequence, `Ctrl + Alt + Delete`.
 
@@ -27,7 +27,7 @@ The hook belongs to the CatX process. Windows removes it if the process exits. `
 
 ### Settings
 
-`SettingsService` serializes three non-sensitive preferences as JSON: cat style, recovery chord, and roaming interval. Malformed JSON falls back to safe defaults. No setting automatically enables the guard.
+`SettingsService` serializes four non-sensitive preferences as JSON: cat style, recovery chord, roaming interval, and optional auto-lock delay. Malformed JSON falls back to safe defaults. Auto-lock is off by default; when enabled, its one-shot countdown starts after launch, preference changes, or an unlock.
 
 ## Trust boundaries
 

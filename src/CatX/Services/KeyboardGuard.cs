@@ -16,14 +16,8 @@ public sealed class KeyboardGuard : IDisposable
     private const int WmKeyUp = 0x0101;
     private const int WmSysKeyDown = 0x0104;
     private const int WmSysKeyUp = 0x0105;
-    private const int VkControl = 0x11;
-    private const int VkShift = 0x10;
-    private const int VkMenu = 0x12;
-    private const int VkK = 0x4B;
-    private const int VkF12 = 0x7B;
-    private const int VkPause = 0x13;
-
     private readonly LowLevelKeyboardProc _callback;
+    private readonly UnlockChordState _chordState = new();
     private IntPtr _hook;
     private UnlockChord _unlockChord;
 
@@ -36,6 +30,7 @@ public sealed class KeyboardGuard : IDisposable
     {
         if (IsActive) return;
         _unlockChord = chord;
+        _chordState.Reset();
         using var process = Process.GetCurrentProcess();
         using var module = process.MainModule;
         var moduleHandle = GetModuleHandle(module?.ModuleName);
@@ -46,9 +41,12 @@ public sealed class KeyboardGuard : IDisposable
 
     public void Disable()
     {
-        if (!IsActive) return;
-        UnhookWindowsHookEx(_hook);
-        _hook = IntPtr.Zero;
+        if (IsActive)
+        {
+            UnhookWindowsHookEx(_hook);
+            _hook = IntPtr.Zero;
+        }
+        _chordState.Reset();
     }
 
     private IntPtr HookCallback(int code, IntPtr message, IntPtr data)
@@ -63,7 +61,10 @@ public sealed class KeyboardGuard : IDisposable
             return CallNextHookEx(_hook, code, message, data);
 
         var key = Marshal.ReadInt32(data);
-        if (isDown && MatchesUnlockChord(key))
+        // Modifier key-down messages are also suppressed by this hook, so querying
+        // Windows' asynchronous key state is unreliable here. Track every modifier
+        // transition inside the hook and evaluate the final key against that state.
+        if (_chordState.Process(key, isDown, _unlockChord))
         {
             // Remove the hook immediately. Raise the UI event asynchronously so the
             // hook returns quickly and never stalls input system-wide.
@@ -74,23 +75,6 @@ public sealed class KeyboardGuard : IDisposable
 
         return new IntPtr(1);
     }
-
-    private bool MatchesUnlockChord(int key)
-    {
-        var ctrl = IsPressed(VkControl);
-        var alt = IsPressed(VkMenu);
-        var shift = IsPressed(VkShift);
-
-        return _unlockChord switch
-        {
-            UnlockChord.CtrlAltK => key == VkK && ctrl && alt,
-            UnlockChord.CtrlShiftF12 => key == VkF12 && ctrl && shift,
-            UnlockChord.AltShiftPause => key == VkPause && alt && shift,
-            _ => false
-        };
-    }
-
-    private static bool IsPressed(int key) => (GetAsyncKeyState(key) & 0x8000) != 0;
 
     public void Dispose()
     {
@@ -110,9 +94,66 @@ public sealed class KeyboardGuard : IDisposable
     [DllImport("user32.dll")]
     private static extern IntPtr CallNextHookEx(IntPtr hook, int code, IntPtr message, IntPtr data);
 
-    [DllImport("user32.dll")]
-    private static extern short GetAsyncKeyState(int key);
-
     [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
     private static extern IntPtr GetModuleHandle(string? moduleName);
+}
+
+/// <summary>
+/// Maintains modifier state from the same low-level events CatX suppresses. Kept
+/// separate from the native hook so recovery behavior can be unit tested.
+/// </summary>
+internal sealed class UnlockChordState
+{
+    internal const int VkControl = 0x11;
+    internal const int VkShift = 0x10;
+    internal const int VkMenu = 0x12;
+    internal const int VkLShift = 0xA0;
+    internal const int VkRShift = 0xA1;
+    internal const int VkLControl = 0xA2;
+    internal const int VkRControl = 0xA3;
+    internal const int VkLMenu = 0xA4;
+    internal const int VkRMenu = 0xA5;
+    internal const int VkK = 0x4B;
+    internal const int VkF12 = 0x7B;
+    internal const int VkPause = 0x13;
+
+    private readonly HashSet<int> _pressedModifiers = [];
+    private readonly object _sync = new();
+
+    public bool Process(int key, bool isDown, UnlockChord chord)
+    {
+        lock (_sync)
+        {
+            if (IsModifier(key))
+            {
+                if (isDown) _pressedModifiers.Add(key); else _pressedModifiers.Remove(key);
+                return false;
+            }
+
+            if (!isDown) return false;
+
+            var ctrl = HasAny(VkControl, VkLControl, VkRControl);
+            var alt = HasAny(VkMenu, VkLMenu, VkRMenu);
+            var shift = HasAny(VkShift, VkLShift, VkRShift);
+
+            return chord switch
+            {
+                UnlockChord.CtrlAltK => key == VkK && ctrl && alt,
+                UnlockChord.CtrlShiftF12 => key == VkF12 && ctrl && shift,
+                UnlockChord.AltShiftPause => key == VkPause && alt && shift,
+                _ => false
+            };
+        }
+    }
+
+    public void Reset()
+    {
+        lock (_sync) _pressedModifiers.Clear();
+    }
+
+    private bool HasAny(params int[] keys) => keys.Any(_pressedModifiers.Contains);
+
+    private static bool IsModifier(int key) => key is
+        VkControl or VkShift or VkMenu or VkLShift or VkRShift or
+        VkLControl or VkRControl or VkLMenu or VkRMenu;
 }

@@ -22,8 +22,10 @@ CatX is currently distributed as an unsigned community application. Windows Smar
 - Blocks ordinary keyboard input with a Windows low-level keyboard hook.
 - Offers three user-selectable recovery shortcuts.
 - Includes five original vector cat styles: Marmalade, Midnight, Snowball, Tuxedo, and Calico.
+- Includes a **No cat** preference for keyboard-only protection.
 - Animates a click-through cat across the entire Windows virtual desktop, including multiple monitors.
 - Lets you choose how often the cat changes location.
+- Can automatically enable the guard after an optional 30-second, 1-minute, 5-minute, 15-minute, 30-minute, or 1-hour countdown.
 - Saves preferences locally in `%LOCALAPPDATA%\CatX\settings.json`.
 - Makes no network requests, requires no account, and collects no data.
 - Keeps the mouse usable and cannot block Windows' secure `Ctrl + Alt + Delete` screen.
@@ -57,7 +59,7 @@ The self-contained executable will be `publish\CatX.exe`. It includes the .NET r
 
 ## How the safety model works
 
-CatX installs its keyboard hook only after you press **Enable keyboard guard**. The selected recovery chord is checked before the current key event is suppressed. When it matches, CatX immediately removes the hook and restores normal input. Closing the application also removes the hook.
+CatX installs its keyboard hook only after you press **Enable keyboard guard** or an enabled auto-lock countdown expires. Because guarded modifier events are themselves suppressed, CatX tracks Ctrl, Alt, and Shift directly from the low-level hook rather than relying on Windows' post-event key state. The selected recovery chord is checked before the final key event is suppressed. When it matches, CatX immediately removes the hook and restores normal input. Closing the application also removes the hook.
 
 Windows handles `Ctrl + Alt + Delete` outside normal user applications, so CatX cannot suppress it. CatX intentionally never blocks the mouse. It does not run as a service, start with Windows, or persist a lock after the process exits.
 
@@ -69,6 +71,7 @@ src/CatX/
   Services/            Keyboard guard and local settings storage
   CatOverlayWindow.*   Click-through animated desktop cat
   MainWindow.*         Settings and guard controls
+tests/CatX.Tests/      Recovery-chord regression tests
 ```
 
 ## Contributing

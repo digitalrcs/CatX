@@ -5,6 +5,7 @@ public sealed class AppSettings
     public string CatStyle { get; set; } = "Marmalade";
     public UnlockChord UnlockChord { get; set; } = UnlockChord.CtrlAltK;
     public int RoamEverySeconds { get; set; } = 8;
+    public int AutoLockAfterSeconds { get; set; }
 }
 
 public enum UnlockChord

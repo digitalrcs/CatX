@@ -35,7 +35,7 @@
                 <TextBlock Text="Choose a companion and a private recovery shortcut." Foreground="#657277" FontSize="15" Margin="0,8,0,30"/>
                 <TextBlock Text="DESKTOP CAT" Foreground="#7A8589" FontWeight="Bold" FontSize="12"/>
                 <ComboBox x:Name="CatStyleCombo" Margin="0,8,0,22" SelectionChanged="PreferenceChanged">
-                    <ComboBoxItem Content="Marmalade"/><ComboBoxItem Content="Midnight"/><ComboBoxItem Content="Snowball"/><ComboBoxItem Content="Tuxedo"/><ComboBoxItem Content="Calico"/>
+                    <ComboBoxItem Content="No cat"/><ComboBoxItem Content="Marmalade"/><ComboBoxItem Content="Midnight"/><ComboBoxItem Content="Snowball"/><ComboBoxItem Content="Tuxedo"/><ComboBoxItem Content="Calico"/>
                 </ComboBox>
                 <TextBlock Text="UNLOCK COMBINATION" Foreground="#7A8589" FontWeight="Bold" FontSize="12"/>
                 <ComboBox x:Name="UnlockCombo" Margin="0,8,0,22" SelectionChanged="PreferenceChanged">
@@ -44,6 +44,10 @@
                 <TextBlock Text="CAT MOVES EVERY" Foreground="#7A8589" FontWeight="Bold" FontSize="12"/>
                 <ComboBox x:Name="RoamCombo" Margin="0,8,0,28" SelectionChanged="PreferenceChanged">
                     <ComboBoxItem Content="5 seconds" Tag="5"/><ComboBoxItem Content="8 seconds" Tag="8"/><ComboBoxItem Content="15 seconds" Tag="15"/><ComboBoxItem Content="30 seconds" Tag="30"/>
+                </ComboBox>
+                <TextBlock Text="AUTO-LOCK AFTER" Foreground="#7A8589" FontWeight="Bold" FontSize="12"/>
+                <ComboBox x:Name="AutoLockCombo" Margin="0,8,0,28" SelectionChanged="PreferenceChanged">
+                    <ComboBoxItem Content="Off" Tag="0"/><ComboBoxItem Content="30 seconds" Tag="30"/><ComboBoxItem Content="1 minute" Tag="60"/><ComboBoxItem Content="5 minutes" Tag="300"/><ComboBoxItem Content="15 minutes" Tag="900"/><ComboBoxItem Content="30 minutes" Tag="1800"/><ComboBoxItem Content="1 hour" Tag="3600"/>
                 </ComboBox>
                 <Border x:Name="StatusCard" Background="#FFF0CC" CornerRadius="8" Padding="16" Margin="0,0,0,22">
                     <StackPanel Orientation="Horizontal"><Ellipse x:Name="StatusDot" Width="12" Height="12" Fill="#D89B24" Margin="0,2,12,0" VerticalAlignment="Top"/><StackPanel><TextBlock x:Name="StatusTitle" Text="Guard is ready" FontWeight="Bold"/><TextBlock x:Name="StatusDetail" Text="Your keyboard is currently active." Foreground="#657277" Margin="0,4,0,0" TextWrapping="Wrap"/></StackPanel></StackPanel>

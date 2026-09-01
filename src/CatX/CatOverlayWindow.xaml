@@ -15,6 +15,9 @@
             <Polygon x:Name="LeftEar" Points="27,60 37,18 60,54" Fill="#F49A4A"/>
             <Polygon x:Name="RightEar" Points="70,52 95,21 99,69" Fill="#F49A4A"/>
             <Polygon Points="34,55 39,34 50,55" Fill="#E97963"/><Polygon Points="78,51 92,34 93,60" Fill="#E97963"/>
+            <!-- Coat patches must render below the face so eyes and whiskers stay visible. -->
+            <Path x:Name="PatchOne" Data="M 75,69 Q 105,57 123,78 Q 105,99 79,91 Z" Fill="Transparent"/>
+            <Path x:Name="PatchTwo" Data="M 143,76 Q 176,65 187,93 L 181,111 Q 153,107 143,76 Z" Fill="Transparent"/>
             <Ellipse Width="13" Height="18" Canvas.Left="43" Canvas.Top="72" Fill="#253238"/><Ellipse Width="13" Height="18" Canvas.Left="73" Canvas.Top="72" Fill="#253238"/>
             <Ellipse Width="5" Height="5" Canvas.Left="47" Canvas.Top="75" Fill="White"/><Ellipse Width="5" Height="5" Canvas.Left="77" Canvas.Top="75" Fill="White"/>
             <Polygon Points="57,94 69,94 63,102" Fill="#A84F59"/>
@@ -25,8 +28,6 @@
             <Rectangle x:Name="BackLeg" Width="25" Height="48" RadiusX="12" Canvas.Left="151" Canvas.Top="116" Fill="#F49A4A" RenderTransformOrigin="0.5,0">
                 <Rectangle.RenderTransform><RotateTransform x:Name="BackLegRotate" Angle="-7"/></Rectangle.RenderTransform>
             </Rectangle>
-            <Path x:Name="PatchOne" Data="M 75,69 Q 105,57 123,78 Q 105,99 79,91 Z" Fill="Transparent"/>
-            <Path x:Name="PatchTwo" Data="M 143,76 Q 176,65 187,93 L 181,111 Q 153,107 143,76 Z" Fill="Transparent"/>
         </Canvas>
     </Canvas>
 </Window>

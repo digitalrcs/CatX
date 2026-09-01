@@ -4,7 +4,7 @@ CatX 1.0 provides the core keyboard guard and built-in desktop cats. Potential f
 
 ## Near term
 
-- Add automated tests around settings parsing and recovery-chord matching.
+- Expand automated tests around settings persistence and timer behavior.
 - Add a signed installer and Authenticode-signed release executable.
 - Package a native Windows ARM64 build.
 - Add an application icon and release screenshots.

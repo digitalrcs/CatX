@@ -7,7 +7,8 @@ Thank you for helping make keyboards safer from paws.
 1. Use Windows 11 with the .NET 8 SDK.
 2. Fork and clone the repository.
 3. Run `dotnet build CatX.sln --configuration Release`.
-4. Start the app with `dotnet run --project src/CatX/CatX.csproj`.
+4. Run `dotnet test CatX.sln --configuration Release`.
+5. Start the app with `dotnet run --project src/CatX/CatX.csproj`.
 
 ## Testing keyboard changes safely
 

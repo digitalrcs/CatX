@@ -2,6 +2,19 @@
 
 All notable CatX changes are documented here. The project follows [Semantic Versioning](https://semver.org/).
 
+## [1.0.1] - 2026-08-31
+
+### Fixed
+
+- Recovery shortcuts now track Ctrl, Alt, and Shift directly from suppressed low-level hook events, allowing keyboard unlock to work while the guard is active.
+- Cat coat patches now render beneath facial features so eyes and whiskers remain visible.
+
+### Added
+
+- **No cat** preference for users who want keyboard protection without a desktop animation.
+- Optional auto-lock countdown with delays from 30 seconds to 1 hour; off remains the default.
+- Regression tests for every recovery shortcut, left/right modifier keys, modifier release, and state reset.
+
 ## [1.0.0] - 2026-08-31
 
 ### Added
@@ -16,3 +29,4 @@ All notable CatX changes are documented here. The project follows [Semantic Vers
 - User, contributor, architecture, privacy, security, support, and troubleshooting documentation.
 
 [1.0.0]: https://github.com/digitalrcs/CatX/releases/tag/v1.0.0
+[1.0.1]: https://github.com/digitalrcs/CatX/releases/tag/v1.0.1

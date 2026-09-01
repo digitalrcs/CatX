@@ -13,6 +13,7 @@ CatX stores only these preferences in `%LOCALAPPDATA%\CatX\settings.json`:
 - selected cat style;
 - selected recovery shortcut;
 - cat movement interval.
+- optional auto-lock delay.
 
 The file can be deleted at any time to reset preferences.
 

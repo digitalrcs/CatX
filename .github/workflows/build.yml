@@ -20,6 +20,8 @@ jobs:
         run: dotnet restore CatX.sln
       - name: Build
         run: dotnet build CatX.sln --configuration Release --no-restore
+      - name: Test recovery-key state tracking
+        run: dotnet test tests/CatX.Tests/CatX.Tests.csproj --configuration Release --no-build
       - name: Publish self-contained executable
         run: dotnet publish src/CatX/CatX.csproj --configuration Release --runtime win-x64 --self-contained true --output artifacts/CatX
       - name: Upload executable artifact

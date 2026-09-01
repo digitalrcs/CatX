@@ -4,6 +4,8 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CatX", "src\CatX\CatX.csproj", "{1FC1103D-1778-4CA3-A520-4E111807A2C3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CatX.Tests", "tests\CatX.Tests\CatX.Tests.csproj", "{30CEEA1D-8172-48CC-96AE-EF2CEB77CC89}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -14,5 +16,9 @@ Global
 		{1FC1103D-1778-4CA3-A520-4E111807A2C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1FC1103D-1778-4CA3-A520-4E111807A2C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1FC1103D-1778-4CA3-A520-4E111807A2C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30CEEA1D-8172-48CC-96AE-EF2CEB77CC89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30CEEA1D-8172-48CC-96AE-EF2CEB77CC89}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30CEEA1D-8172-48CC-96AE-EF2CEB77CC89}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30CEEA1D-8172-48CC-96AE-EF2CEB77CC89}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

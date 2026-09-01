@@ -15,12 +15,19 @@ The process-owned hook disappears when CatX exits.
 - Some laptop function rows require `Fn`; try the `Ctrl + Alt + K` option.
 - Accessibility tools, keyboard remappers, remote-desktop software, or vendor hotkey utilities may reserve a combination. Choose a different CatX shortcut before enabling the guard again.
 
+Version 1.0.1 fixed modifier tracking while input is suppressed. If you are using 1.0.0, download the latest release before troubleshooting further.
+
+## CatX locks again after I unlock it
+
+Check **Auto-lock after** in the main window. When enabled, the countdown starts again after an unlock so protection returns automatically. Select **Off** to require manual activation.
+
 ## Windows SmartScreen appears
 
 CatX releases are not currently code-signed. Verify that the ZIP came from `https://github.com/digitalrcs/CatX/releases`, scan it with your security software, and use SmartScreen's **More info** option only if you trust the download. Building from source is also supported.
 
 ## The cat does not appear
 
+- Make sure **Desktop cat** is not set to **No cat**.
 - Check all connected monitors; CatX uses the complete virtual desktop.
 - Wait for the selected movement interval.
 - Display-management software that creates unusual virtual-screen bounds may position the overlay unexpectedly. Disable the guard, reconnect displays, and restart CatX.
