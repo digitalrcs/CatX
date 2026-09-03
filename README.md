@@ -84,7 +84,7 @@ Bug reports and pull requests are welcome. Please read [CONTRIBUTING.md](CONTRIB
 Additional project information:
 
 - [User guide](docs/USER_GUIDE.md)
-- [Printable PDF user guide](output/pdf/CatX-User-Guide-v1.0.2.pdf)
+- [Printable PDF user guide](output/pdf/CatX-User-Guide-v1.0.3.pdf)
 - [GitHub wiki](https://github.com/digitalrcs/CatX/wiki)
 - [Windows packaging and signing](docs/PACKAGING.md)
 - [Architecture](docs/ARCHITECTURE.md)

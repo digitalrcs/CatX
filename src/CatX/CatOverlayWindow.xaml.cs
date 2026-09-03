@@ -38,22 +38,17 @@ public partial class CatOverlayWindow : Window
     public void ApplyPreferences(AppSettings settings)
     {
         _roamTimer.Interval = TimeSpan.FromSeconds(settings.RoamEverySeconds);
-        var palette = settings.CatStyle switch
-        {
-            "Midnight" => new CatPalette("#2F3542", "#525B6C", "#242A35", "#697386"),
-            "Snowball" => new CatPalette("#F4F1EA", "#D9D5CD", "#E5E0D7", "#C7C2B8"),
-            "Tuxedo" => new CatPalette("#30343B", "#F7F4EC", "#1F2329", "#F7F4EC"),
-            "Calico" => new CatPalette("#F4E5C8", "#FFF4DD", "#2E333A", "#E8874B"),
-            _ => new CatPalette("#F49A4A", "#FFC982", "#D8773B", "#C65B36")
-        };
+        var palette = PaletteFor(settings.CatStyle);
 
         Body.Fill = Head.Fill = FrontLeg.Fill = BackLeg.Fill = LeftEar.Fill = RightEar.Fill = Brush(palette.Base);
         Tail.Stroke = Brush(palette.Base);
         Chest.Fill = Brush(palette.Chest);
-        PatchOne.Fill = Brush(palette.PatchOne);
-        PatchTwo.Fill = Brush(palette.PatchTwo);
-        PatchOne.Opacity = palette.PatchOne == "#D8773B" ? 0.35 : 1;
-        PatchTwo.Opacity = palette.PatchTwo == "#C65B36" ? 0.35 : 1;
+        HeadPatch.Fill = Brush(palette.HeadPatch);
+        BodyPatch.Fill = Brush(palette.BodyPatch);
+        HeadPatch.Opacity = palette.PatchOpacity;
+        BodyPatch.Opacity = palette.PatchOpacity;
+        HeadPatch.Visibility = palette.ShowHeadPatch ? Visibility.Visible : Visibility.Collapsed;
+        BodyPatch.Visibility = palette.ShowBodyPatch ? Visibility.Visible : Visibility.Collapsed;
     }
 
     protected override void OnSourceInitialized(EventArgs e)
@@ -99,8 +94,26 @@ public partial class CatOverlayWindow : Window
 
     internal static double ScaleForTravel(double currentX, double targetX) => targetX >= currentX ? -1 : 1;
 
+    internal static CatPalette PaletteFor(string catStyle) => catStyle switch
+    {
+        // Midnight is a solid coat. The old contrasting patches looked like misplaced spots.
+        "Midnight" => new CatPalette("#2F3542", "#525B6C", "#2F3542", "#2F3542", false, false),
+        "Snowball" => new CatPalette("#F4F1EA", "#D9D5CD", "#E5E0D7", "#C7C2B8", true, true, 0.55),
+        // Tuxedo's white chest supplies its clean two-tone pattern without a stray facial or flank spot.
+        "Tuxedo" => new CatPalette("#30343B", "#F7F4EC", "#30343B", "#30343B", false, false),
+        "Calico" => new CatPalette("#F4E5C8", "#FFF4DD", "#2E333A", "#E8874B", true, true),
+        _ => new CatPalette("#F49A4A", "#FFC982", "#D8773B", "#C65B36", true, true, 0.35)
+    };
+
     private static SolidColorBrush Brush(string color) => new((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(color));
-    private sealed record CatPalette(string Base, string Chest, string PatchOne, string PatchTwo);
+    internal sealed record CatPalette(
+        string Base,
+        string Chest,
+        string HeadPatch,
+        string BodyPatch,
+        bool ShowHeadPatch,
+        bool ShowBodyPatch,
+        double PatchOpacity = 1);
     [DllImport("user32.dll", EntryPoint = "GetWindowLongPtrW")]
     private static extern IntPtr GetWindowLongPtr(IntPtr window, int index);
 

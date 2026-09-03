@@ -20,7 +20,7 @@ from reportlab.platypus import (
 
 
 ROOT = Path(__file__).resolve().parents[1]
-OUTPUT = ROOT / "output" / "pdf" / "CatX-User-Guide-v1.0.2.pdf"
+OUTPUT = ROOT / "output" / "pdf" / "CatX-User-Guide-v1.0.3.pdf"
 LOGO = ROOT / "src" / "CatX" / "Assets" / "DigitalRCS_Logo.png"
 CAT_ICON = ROOT / "src" / "CatX" / "Assets" / "catx-app-icon.png"
 
@@ -86,13 +86,16 @@ def later_page(canvas, document):
     canvas.saveState()
     width, height = letter
     canvas.setStrokeColor(colors.HexColor("#D6E3E5"))
-    canvas.line(0.65 * inch, height - 0.55 * inch, width - 0.65 * inch, height - 0.55 * inch)
-    canvas.setFont("Helvetica-Bold", 9)
-    canvas.setFillColor(NAVY)
-    canvas.drawString(0.65 * inch, height - 0.42 * inch, "CATX KEYBOARD GUARD")
+    if document.page != 4:
+        canvas.line(0.65 * inch, height - 0.55 * inch, width - 0.65 * inch, height - 0.55 * inch)
+        canvas.setFont("Helvetica-Bold", 9)
+        canvas.setFillColor(NAVY)
+        canvas.drawString(0.65 * inch, height - 0.42 * inch, "CATX KEYBOARD GUARD")
+        canvas.setFont("Helvetica", 8)
+        canvas.setFillColor(MUTED)
+        canvas.drawRightString(width - 0.65 * inch, height - 0.42 * inch, "Dan Roberts - DigitalRCS")
     canvas.setFont("Helvetica", 8)
     canvas.setFillColor(MUTED)
-    canvas.drawRightString(width - 0.65 * inch, height - 0.42 * inch, "Dan Roberts - DigitalRCS")
     canvas.line(0.65 * inch, 0.52 * inch, width - 0.65 * inch, 0.52 * inch)
     canvas.drawString(0.65 * inch, 0.33 * inch, "Runs locally - No account - No data collection")
     canvas.drawRightString(width - 0.65 * inch, 0.33 * inch, f"Page {document.page}")
@@ -209,7 +212,7 @@ def build_pdf():
             icon,
             Spacer(1, 0.18 * inch),
             Paragraph("CatX Keyboard Guard", title),
-            Paragraph("User Guide - Version 1.0.2", subtitle),
+            Paragraph("User Guide - Version 1.0.3", subtitle),
             Spacer(1, 0.22 * inch),
             callout(
                 "A friendly Windows 11 keyboard guard for the moments when your cat decides the keyboard is the best seat in the house.",
@@ -329,8 +332,24 @@ def build_pdf():
         ]
     )
 
+    recovery_page_header = Table(
+        [[Paragraph("<b>CATX KEYBOARD GUARD</b>", small), Paragraph("Dan Roberts - DigitalRCS", small)]],
+        colWidths=[3.25 * inch, 3.25 * inch],
+    )
+    recovery_page_header.setStyle(
+        TableStyle(
+            [
+                ("ALIGN", (1, 0), (1, 0), "RIGHT"),
+                ("LINEBELOW", (0, 0), (-1, -1), 0.7, colors.HexColor("#D6E3E5")),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 8),
+            ]
+        )
+    )
+
     story.extend(
         [
+            recovery_page_header,
+            Spacer(1, 0.12 * inch),
             Paragraph("Safety, recovery, and troubleshooting", h1),
             callout(
                 "Windows handles <b>Ctrl + Alt + Delete</b> outside CatX. The secure Windows screen remains available even while the guard is active.",

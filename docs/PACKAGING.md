@@ -20,8 +20,8 @@ The script runs the Release tests, publishes a self-contained single-file `win-x
 
 The finished outputs are:
 
-- `dist\CatX-Setup-1.0.2.exe` - standalone installer.
-- `dist\CatX-Windows11-1.0.2.zip` - distribution package containing a root-level `Setup.exe`, user guide, README, and license.
+- `dist\CatX-Setup-1.0.3.exe` - standalone installer.
+- `dist\CatX-Windows11-1.0.3.zip` - distribution package containing a root-level `Setup.exe`, user guide, README, and license.
 
 An end user extracts the ZIP and runs `Setup.exe`.
 
@@ -39,8 +39,8 @@ Microsoft SignTool is included with the Windows SDK. Use SHA-256 for the file di
 
 ```powershell
 signtool sign /fd SHA256 /td SHA256 /tr "https://your-provider.example/timestamp" /sha1 "CERTIFICATE_THUMBPRINT" ".\publish\CatX\CatX.exe"
-signtool sign /fd SHA256 /td SHA256 /tr "https://your-provider.example/timestamp" /sha1 "CERTIFICATE_THUMBPRINT" ".\dist\CatX-Setup-1.0.2.exe"
-signtool verify /pa /v ".\dist\CatX-Setup-1.0.2.exe"
+signtool sign /fd SHA256 /td SHA256 /tr "https://your-provider.example/timestamp" /sha1 "CERTIFICATE_THUMBPRINT" ".\dist\CatX-Setup-1.0.3.exe"
+signtool verify /pa /v ".\dist\CatX-Setup-1.0.3.exe"
 ```
 
 Official SignTool reference: [Microsoft Learn](https://learn.microsoft.com/windows/win32/seccrypto/signtool)

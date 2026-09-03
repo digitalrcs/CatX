@@ -2,6 +2,14 @@
 
 All notable CatX changes are documented here. The project follows [Semantic Versioning](https://semver.org/).
 
+## [1.0.3] - 2026-09-03
+
+### Fixed
+
+- Removed misplaced face and body spots from the solid Midnight and two-tone Tuxedo cats.
+- Repositioned Calico markings into separate crown and flank regions so they no longer cover the eyes or cross onto the wrong body part.
+- Added regression coverage for coat-specific marking visibility.
+
 ## [1.0.2] - 2026-09-01
 
 ### Fixed
@@ -48,3 +56,4 @@ All notable CatX changes are documented here. The project follows [Semantic Vers
 [1.0.0]: https://github.com/digitalrcs/CatX/releases/tag/v1.0.0
 [1.0.1]: https://github.com/digitalrcs/CatX/releases/tag/v1.0.1
 [1.0.2]: https://github.com/digitalrcs/CatX/releases/tag/v1.0.2
+[1.0.3]: https://github.com/digitalrcs/CatX/releases/tag/v1.0.3

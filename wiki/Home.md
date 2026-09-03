@@ -18,7 +18,7 @@ CatX is created by **Dan Roberts - DigitalRCS**. It runs locally, requires no ac
 ## Quick links
 
 - [Latest release](https://github.com/digitalrcs/CatX/releases/latest)
-- [Printable PDF user guide](https://github.com/digitalrcs/CatX/raw/main/output/pdf/CatX-User-Guide-v1.0.2.pdf)
+- [Printable PDF user guide](https://github.com/digitalrcs/CatX/raw/main/output/pdf/CatX-User-Guide-v1.0.3.pdf)
 - [Report a bug](https://github.com/digitalrcs/CatX/issues/new?template=bug_report.yml)
 - [Request a feature](https://github.com/digitalrcs/CatX/issues/new?template=feature_request.yml)
 - [Source code](https://github.com/digitalrcs/CatX)

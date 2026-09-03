@@ -1,6 +1,6 @@
 # CatX Keyboard Guard - User Guide
 
-**Version 1.0.2**
+**Version 1.0.3**
 **Dan Roberts - DigitalRCS**
 
 CatX is a friendly Windows 11 keyboard guard for moments when a cat decides the keyboard is the best seat in the house. It temporarily ignores ordinary keyboard input while keeping the mouse available and showing an animated desktop cat.

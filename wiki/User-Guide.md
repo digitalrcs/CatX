@@ -29,4 +29,4 @@ Minimizing CatX hides its taskbar button and places a cat icon in the Windows no
 
 Double-click the icon to reopen CatX.
 
-For printable instructions, download the [PDF user guide](https://github.com/digitalrcs/CatX/raw/main/output/pdf/CatX-User-Guide-v1.0.2.pdf).
+For printable instructions, download the [PDF user guide](https://github.com/digitalrcs/CatX/raw/main/output/pdf/CatX-User-Guide-v1.0.3.pdf).
