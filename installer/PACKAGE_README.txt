@@ -1,4 +1,4 @@
-CatX Keyboard Guard 1.1.0 for Windows 11
+CatX Keyboard Guard 1.1.1 for Windows 11
 Dan Roberts - DigitalRCS
 
 INSTALL

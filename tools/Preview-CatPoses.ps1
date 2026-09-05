@@ -42,10 +42,15 @@ foreach($style in $Styles) {
             $mood=[Enum]::Parse($behavior.Mood.GetType(),$moodName)
             $behavior.GetType().GetProperty('Mood').SetValue($behavior,$mood)
             $behavior.GetType().GetProperty('MoodTime').SetValue($behavior,1.5)
-            if($moodName -in @('Walking','MouseChase')) { $behavior.GetType().GetField('_velocity',$flags).SetValue($behavior,[System.Windows.Vector]::new(120,0)) }
+            if($moodName -in @('Walking','MouseChase')) { $behavior.GetType().GetField('_velocity',$flags).SetValue($behavior,[System.Windows.Vector]::new($(if($moodName -eq 'MouseChase'){285}else{120}),0)) }
             else { $behavior.GetType().GetField('_velocity',$flags).SetValue($behavior,[System.Windows.Vector]::new(0,0)) }
             for($i=0;$i -lt 90;$i++) { $null=$window.GetType().GetMethod('RenderPose',$flags).Invoke($window,@([double](1/60))) }
             Save-Visual $window "$style-$moodName"
+            if ($style.StartsWith('Realistic ')) {
+                $layer=$window.FindName('RealisticLayer')
+                $images=@($layer.Children | Where-Object { $_ -is [System.Windows.Controls.Image] })
+                if($images.Count -ne 1 -or $images[0].Opacity -ne 1 -or !$images[0].Source) { throw 'Realistic cat must draw one opaque pose, never overlapping legs.' }
+            }
         }
         if($Live) {
             # Exercise the real Rendering callback and mouse-window lifecycle, not just pose sampling.
@@ -81,9 +86,13 @@ if($MainWindow) {
         $settings=$type.GetField('_settings',$flags).GetValue($main)
         $settings.AutoLockAfterSeconds=30
         $settings.CatStyle='Realistic Tabby'
+        $settings.CatCount=3
+        $settings.AdditionalCatStyles=[System.Collections.Generic.List[string]]@('Calico','Midnight')
         $type.GetField('_loading',$flags).SetValue($main,$true)
         $combo=$main.FindName('CatStyleCombo')
         $combo.SelectedItem=@($combo.Items | Where-Object Content -EQ 'Realistic Tabby')[0]
+        $main.FindName('CatCountCombo').SelectedIndex=2
+        $null=$type.GetMethod('BuildAdditionalCatControls',$flags).Invoke($main,@())
         $type.GetField('_loading',$flags).SetValue($main,$false)
         $main.Show()
         Save-Visual $main 'MainWindow'
@@ -91,9 +100,22 @@ if($MainWindow) {
         $null=$handler.Invoke($main,@($null,[System.Windows.RoutedEventArgs]::new()))
         $guard=$type.GetField('_keyboardGuard',$flags).GetValue($main)
         if ($guard.IsActive -or $timer.IsEnabled -or !$type.GetField('_previewing',$flags).GetValue($main)) { throw 'Preview safety check failed.' }
+        $previewCats=@($type.GetField('_overlays',$flags).GetValue($main))
+        if($previewCats.Count -ne 3 -or @($previewCats | Where-Object IsVisible).Count -ne 3) { throw 'Multiple-cat preview did not show all three cats.' }
+        $chosen=@($previewCats | ForEach-Object { $_.GetType().GetField('_settings',$flags).GetValue($_).CatStyle })
+        if(($chosen -join ',') -ne 'Realistic Tabby,Calico,Midnight') { throw 'Multiple-cat styles did not match selections.' }
+        foreach($actionIndex in @(1,2,3,4)) {
+            $main.FindName('PreviewActionCombo').SelectedIndex=$actionIndex
+            $expected=@('','Sleeping','Grooming','Walking','CursorChase')[$actionIndex]
+            foreach($catWindow in $previewCats) {
+                if($catWindow.GetType().GetField('_previewMood',$flags).GetValue($catWindow).ToString() -ne $expected) { throw 'Preview action did not reach every cat.' }
+            }
+            if($guard.IsActive -or $timer.IsEnabled) { throw 'Pose review activated a keyboard guard or timer.' }
+        }
         Save-Visual $main 'MainWindow-Preview'
         $null=$handler.Invoke($main,@($null,[System.Windows.RoutedEventArgs]::new()))
-        if (!$timer.IsEnabled -or $guard.IsActive -or $type.GetField('_overlay',$flags).GetValue($main)) { throw 'Preview cleanup / auto-lock restart failed.' }
+        if (!$timer.IsEnabled -or $guard.IsActive -or $type.GetField('_overlays',$flags).GetValue($main).Count -ne 0) { throw 'Preview cleanup / auto-lock restart failed.' }
+        if(@($previewCats | Where-Object IsVisible).Count -ne 0) { throw 'A companion survived Stop preview.' }
         $timer.Stop()
         Write-Output 'Preview UI verified: no keyboard hook, auto-lock paused, overlay cleaned up, timer restarted on stop.'
     } finally { $main.Close() }

@@ -12,7 +12,7 @@ While a cat or preview is active, the overlay samples the Windows cursor positio
 
 CatX stores only these preferences in `%LOCALAPPDATA%\CatX\settings.json`:
 
-- selected cat style;
+- selected cat style, number of cats, and additional cats' styles;
 - selected recovery shortcut;
 - cat movement interval.
 - optional auto-lock delay.

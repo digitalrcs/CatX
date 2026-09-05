@@ -29,7 +29,6 @@ public partial class CatOverlayWindow : Window
     private string _loadedStyle = "";
     private string _lastClip = "";
     private double _clipTime;
-    private double _transitionTime;
     private double _stride;
     private double _restScale = 1;
     private CatMood _previousMood;
@@ -37,9 +36,25 @@ public partial class CatOverlayWindow : Window
     private string _screenName = "";
     private Rect _area;
     private double _displayCheckIn;
+    private readonly int _slot;
+    private readonly int _count;
+    private CatMood? _previewMood;
 
-    public CatOverlayWindow(AppSettings settings)
+    public void SetPreviewAction(string action)
     {
+        _previewMood = action switch { "Sleep" => CatMood.Sleeping, "Groom" => CatMood.Grooming,
+            "Walk" => CatMood.Walking, "Run" => CatMood.CursorChase, _ => null };
+        _behavior?.EndPosePreview();
+        if (action == "Mouse visit") _behavior?.RequestMousePreview();
+        _lastClip = "";
+    }
+
+    public CatOverlayWindow(AppSettings settings) : this(settings, 0, 1) { }
+
+    public CatOverlayWindow(AppSettings settings, int slot, int count)
+    {
+        _slot = slot;
+        _count = count;
         InitializeComponent();
         ApplyPreferences(settings);
         Loaded += (_, _) =>
@@ -48,7 +63,7 @@ public partial class CatOverlayWindow : Window
             var screen = System.Windows.Forms.Screen.FromPoint(cursor);
             _screenName = screen.DeviceName;
             UpdateArea(screen);
-            _behavior = new CatBehavior(_area);
+            _behavior = new CatBehavior(_area, slot: _slot, count: _count);
             UpdateBehaviorPreferences();
             Left = _behavior.Position.X;
             Top = _behavior.Position.Y;
@@ -65,7 +80,7 @@ public partial class CatOverlayWindow : Window
             _clock.Stop();
             _mouse?.Close();
             _frames = null;
-            RealisticFrame.Source = RealisticNextFrame.Source = TransitionFrame.Source = null;
+            RealisticFrame.Source = null;
         };
     }
 
@@ -80,7 +95,7 @@ public partial class CatOverlayWindow : Window
             _loadedStyle = settings.CatStyle;
             _lastClip = "";
             _clipTime = 0;
-            RealisticFrame.Source = RealisticNextFrame.Source = TransitionFrame.Source = null;
+            RealisticFrame.Source = null;
         }
         CatBody.Visibility = realistic ? Visibility.Collapsed : Visibility.Visible;
         RealisticLayer.Visibility = realistic ? Visibility.Visible : Visibility.Collapsed;
@@ -88,7 +103,7 @@ public partial class CatOverlayWindow : Window
         var palette = PaletteFor(settings.CatStyle);
 
         Body.Fill = Head.Fill = FrontLeg.Fill = BackLeg.Fill = LeftEar.Fill = RightEar.Fill = Brush(palette.Base);
-        Tail.Stroke = Brush(palette.Base);
+        Tail.Stroke = TailTip.Stroke = Brush(palette.Base);
         Chest.Fill = Brush(palette.Chest);
         HeadPatch.Fill = Brush(palette.HeadPatch);
         BodyPatch.Fill = Brush(palette.BodyPatch);
@@ -138,7 +153,8 @@ public partial class CatOverlayWindow : Window
         }
         var pixel = System.Windows.Forms.Cursor.Position;
         var transform = PresentationSource.FromVisual(this)?.CompositionTarget?.TransformFromDevice ?? Matrix.Identity;
-        _behavior.Step(dt, _area, transform.Transform(new Point(pixel.X, pixel.Y)));
+        if (_previewMood is CatMood preview) _behavior.PreviewPose(preview, dt);
+        else _behavior.Step(dt, _area, transform.Transform(new Point(pixel.X, pixel.Y)));
         Left = _behavior.Position.X;
         Top = _behavior.Position.Y;
         DirectionTransform.ScaleX = _behavior.Facing;
@@ -147,7 +163,7 @@ public partial class CatOverlayWindow : Window
         {
             if (_behavior.MouseVisible)
             {
-                _mouse.MoveTo(_behavior.MousePosition);
+                _mouse.UpdateScene(_behavior.MousePosition, _behavior.MouseHolePosition, _behavior.MouseOutwardDirection, _behavior.MouseTravel);
                 if (!_mouse.IsVisible) _mouse.Show();
             }
             else if (_mouse.IsVisible) _mouse.Hide();
@@ -170,22 +186,17 @@ public partial class CatOverlayWindow : Window
                 CatMood.LyingDown or CatMood.Waking => "lie",
                 CatMood.Grooming => "groom",
                 CatMood.Sitting => "sit",
-                _ => moving ? excited ? "run" : "walk" : "idle"
+                _ => moving ? cat.Speed > 170 ? "run" : "walk" : "idle"
             };
             if (_lastClip != clip || (cat.Mood == CatMood.Waking && _previousMood != cat.Mood))
             {
-                TransitionFrame.Source = RealisticFrame.Source;
-                _transitionTime = .16;
                 _clipTime = 0;
                 _lastClip = clip;
             }
-            else _clipTime += dt * (moving && clip is "walk" or "run" ? Math.Clamp(cat.Speed / (excited ? 285 : 120), .35, 1.4) : 1);
-            var sample = _frames.Sample(clip, _clipTime, cat.Mood == CatMood.Waking);
-            RealisticFrame.Source = sample.First;
-            RealisticNextFrame.Source = sample.Next;
-            RealisticNextFrame.Opacity = sample.Blend;
-            _transitionTime = Math.Max(0, _transitionTime - dt);
-            TransitionFrame.Opacity = _transitionTime / .16;
+            else _clipTime += dt * (moving && clip is "walk" or "run" ? Math.Clamp(cat.Speed / (clip == "run" ? 285 : 120), .35, 1.4) : 1);
+            // Alpha-blending full-body poses draws both sets of legs. Display exactly
+            // one complete pose; elapsed-time locomotion remains smoothly interpolated.
+            RealisticFrame.Source = _frames.Sample(clip, _clipTime, cat.Mood == CatMood.Waking);
             _previousMood = cat.Mood;
             return;
         }
@@ -196,13 +207,23 @@ public partial class CatOverlayWindow : Window
         var sitting = cat.Mood is CatMood.Sitting or CatMood.Grooming;
         var scale = resting ? .50 : sitting ? .82 : 1;
         _restScale += (scale - _restScale) * (1 - Math.Exp(-4 * dt));
-        RestTransform.ScaleY = _restScale + (cat.Mood == CatMood.Sleeping ? Math.Sin(cat.MoodTime * 1.8) * .008 : 0);
+        RestTransform.ScaleY = _restScale;
+        var sleepPhase = cat.MoodTime % 4;
+        TailTipRotate.Angle = cat.Mood == CatMood.Sleeping && sleepPhase < 1.8
+            ? 9 * Math.Pow(Math.Sin(Math.PI * sleepPhase / 1.8), 2) * Math.Sin(sleepPhase * Math.Tau * 1.6) : 0;
         OpenEyes.Visibility = resting ? Visibility.Collapsed : Visibility.Visible;
         ClosedEyes.Visibility = resting ? Visibility.Visible : Visibility.Collapsed;
         Canvas.SetTop(CatBody, 44 + (moving ? Math.Abs(stride) * -3 : 0));
-        FrontLegRotate.Angle = moving ? stride * 19 : cat.Mood == CatMood.Grooming ? 110 + Math.Sin(cat.MoodTime * 5) * 14 : resting ? 80 : 0;
+        var grooming = cat.Mood == CatMood.Grooming;
+        var groomPhase = cat.MoodTime % 8;
+        static double Ease(double t) { t = Math.Clamp(t, 0, 1); return t*t*(3-2*t); }
+        var pawUp = Ease(groomPhase) * (1-Ease((groomPhase-6.5)/.8));
+        var earRub = Ease((groomPhase-3.2)/.6) * (1-Ease((groomPhase-6)/.5));
+        FrontLegRotate.Angle = moving ? stride * 19 : grooming ? pawUp*110 + earRub*(35+12*Math.Sin(groomPhase*7.85)) : resting ? 80 : 0;
+        Canvas.SetTop(FrontLeg, 116 - (grooming ? earRub*24 : 0));
+        Tongue.Visibility = grooming && groomPhase is >= 1 and < 3.2 && Math.Sin((groomPhase-1)*Math.Tau*1.8) > .3 ? Visibility.Visible : Visibility.Collapsed;
         BackLegRotate.Angle = moving ? -stride * 19 : resting ? -65 : sitting ? -35 : 0;
-        HeadTilt.Angle = cat.Mood == CatMood.Grooming ? 8 + Math.Sin(cat.MoodTime * 5) * 7 : resting ? 12 : 0;
+        HeadTilt.Angle = grooming ? pawUp*(6 + (groomPhase < 3.2 ? Math.Sin(groomPhase*11.3)*3 : earRub*6)) : resting ? 12 : 0;
     }
 
     internal static double ScaleForTravel(double currentX, double targetX) => targetX >= currentX ? -1 : 1;

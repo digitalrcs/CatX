@@ -2,6 +2,16 @@
 
 All notable CatX changes are documented here. The project follows [Semantic Versioning](https://semver.org/).
 
+## [1.1.1] - 2026-09-05
+
+- Added 1–8 independently styled cats and immediate animation-review controls in keyboard-safe preview mode.
+- Authored a settled Blender sleep loop with tail-tip-only motion. Realistic cats use the supplied paw-wash action; the rejected custom ear reach has been removed. Original animated cats keep their approved paw/ear grooming.
+- Randomized mouse-hole locations throughout the working area and extended toy excursions while retaining the slower speed.
+
+- Removed overlapping realistic-cat frames that made running cats appear to have extra legs.
+- Scheduled regular corner naps, with a first bedtime after about 40 seconds plus walking/lying-down time and 30–45 seconds of sleep. Toy visits no longer interrupt bedtime.
+- Replaced the fast orbiting toy with an 80-pixel-per-second excursion out of a cartoon mouse hole and back into the same hole. Cats stalk from a safe distance instead of catching it.
+
 ## [1.1.0] - 2026-09-05
 
 - Added seven realistic coats rendered from the supplied Blender cat rig, with walk, run, idle, sit, grooming, lie-down, sleep, and waking animations.
@@ -66,3 +76,4 @@ All notable CatX changes are documented here. The project follows [Semantic Vers
 [1.0.2]: https://github.com/digitalrcs/CatX/releases/tag/v1.0.2
 [1.0.3]: https://github.com/digitalrcs/CatX/releases/tag/v1.0.3
 [1.1.0]: https://github.com/digitalrcs/CatX/releases/tag/v1.1.0
+[1.1.1]: https://github.com/digitalrcs/CatX/releases/tag/v1.1.1

@@ -34,7 +34,7 @@ internal sealed class RealisticCatFrames
         }
     }
 
-    public (BitmapSource First, BitmapSource Next, double Blend) Sample(string name, double seconds, bool reverse = false)
+    public BitmapSource Sample(string name, double seconds, bool reverse = false)
     {
         var clip = _clips[name];
         var position = Math.Max(0, seconds * clip.Fps);
@@ -45,8 +45,7 @@ internal sealed class RealisticCatFrames
         if (clip.Loop) position %= clip.Frames.Length;
         else position = Math.Min(position, lastFrame);
         var first = (int)position;
-        var next = clip.Loop ? (first + 1) % clip.Frames.Length : Math.Min(first + 1, lastFrame);
-        return (clip.Frames[first], clip.Frames[next], position - first);
+        return clip.Frames[first];
     }
 
     private static Stream Open(string path) => System.Windows.Application.GetResourceStream(

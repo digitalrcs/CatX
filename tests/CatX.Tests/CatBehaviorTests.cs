@@ -81,4 +81,93 @@ public sealed class CatBehaviorTests
         for (var i = 0; i < 100; i++) cat.Step(60, area, new Point(-100, 50));
         Assert.AreEqual(new Point(-200, 0), cat.Position);
     }
+
+    [TestMethod]
+    public void NapsHappenWithinFirstMinuteAndLastAtLeastThirtySecondsDespiteToyVisits()
+    {
+        var area = new Rect(0, 0, 1920, 1080);
+        for (var seed = 0; seed < 20; seed++)
+        {
+            var cat = new CatBehavior(area, seed) { RoamSeconds = 60 };
+            var sleepStarted = -1d;
+            var sleptFor = 0d;
+            for (var i = 0; i < 120 * 60; i++)
+            {
+                cat.Step(1d / 60, area, new Point(900, 300));
+                if (cat.Mood == CatMood.Sleeping)
+                {
+                    if (sleepStarted < 0) sleepStarted = i / 60d;
+                    sleptFor += 1d / 60;
+                    Assert.IsFalse(cat.MouseVisible, "Toys must not interrupt a nap.");
+                    Assert.AreEqual(area.Bottom - CatBehavior.Height - 8, cat.Position.Y, 3);
+                }
+                else if (sleepStarted >= 0) break;
+            }
+            Assert.IsTrue(sleepStarted is >= 0 and < 65, $"Seed {seed}: first nap at {sleepStarted} seconds");
+            Assert.IsGreaterThanOrEqualTo(29.9, sleptFor, $"Seed {seed}: nap lasted only {sleptFor} seconds");
+        }
+    }
+
+    [TestMethod]
+    public void ToyMakesSlowContinuousRoundTripThroughSameHole()
+    {
+        foreach (var seed in new[] { 7, 42, 1234 })
+        {
+            var area = new Rect(-1920, -120, 1920, 1080);
+            var cat = new CatBehavior(area, seed);
+            Point? previous = null;
+            var hole = new Point();
+            var farthest = -40d;
+            var visits = 0;
+            for (var i = 0; i < 300 * 60; i++)
+            {
+                cat.Step(1d / 60, area, new Point(-900, 300));
+                if (cat.MouseVisible)
+                {
+                    if (previous is Point last)
+                    {
+                        Assert.AreEqual(hole, cat.MouseHolePosition);
+                        Assert.IsLessThanOrEqualTo(CatBehavior.MouseSpeed / 60 + .001, (cat.MousePosition - last).Length);
+                    }
+                    else
+                    {
+                        hole = cat.MouseHolePosition;
+                        farthest = -40;
+                        Assert.IsLessThanOrEqualTo(-39d, (cat.MousePosition.X - hole.X) * cat.MouseOutwardDirection);
+                    }
+                    farthest = Math.Max(farthest, (cat.MousePosition.X - hole.X) * cat.MouseOutwardDirection);
+                    previous = cat.MousePosition;
+                }
+                else if (previous is Point last)
+                {
+                    Assert.IsGreaterThanOrEqualTo(99d, farthest, "Mouse should emerge fully before returning.");
+                    Assert.AreEqual(-40, (last.X - hole.X) * cat.MouseOutwardDirection, .01, "Mouse must enter its hole before disappearing.");
+                    previous = null;
+                    visits++;
+                }
+            }
+            Assert.IsGreaterThanOrEqualTo(2, visits);
+        }
+    }
+
+    [TestMethod]
+    public void MouseHolesVaryAcrossDesktopAndExcursionsExtendBeyondOldLimit()
+    {
+        var area = new Rect(0, 0, 1920, 1080);
+        var cat = new CatBehavior(area, 42);
+        var holes = new HashSet<Point>();
+        var longest = 0d;
+        for (var i = 0; i < 600*60; i++)
+        {
+            cat.Step(1d/60, area, new Point(900, 300));
+            if (!cat.MouseVisible) continue;
+            holes.Add(cat.MouseHolePosition);
+            longest = Math.Max(longest, cat.MouseTravel);
+            Assert.IsTrue(area.Contains(cat.MouseHolePosition));
+            Assert.IsGreaterThan(CatBehavior.MouseEscapeDistance, (cat.MousePosition-cat.Center).Length);
+        }
+        Assert.IsGreaterThanOrEqualTo(3, holes.Count);
+        Assert.IsGreaterThan(400d, longest);
+        Assert.IsGreaterThan(200d, holes.Max(p => p.Y)-holes.Min(p => p.Y));
+    }
 }

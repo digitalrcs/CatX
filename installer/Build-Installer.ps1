@@ -72,6 +72,7 @@ Copy-Item -LiteralPath $guide -Destination (Join-Path $packageDir "CatX-User-Gui
 Copy-Item -LiteralPath $packageReadme -Destination (Join-Path $packageDir "README.txt")
 Copy-Item -LiteralPath (Join-Path $repoRoot "LICENSE") -Destination (Join-Path $packageDir "LICENSE.txt")
 Copy-Item -LiteralPath (Join-Path $repoRoot "docs\ANIMATED_CATS.md") -Destination (Join-Path $packageDir "ANIMATED_CATS.md")
+Copy-Item -LiteralPath (Join-Path $repoRoot "docs\ANIMATION_REVIEW.md") -Destination (Join-Path $packageDir "ANIMATION_REVIEW.md")
 Copy-Item -LiteralPath (Join-Path $repoRoot "docs\USER_GUIDE.md") -Destination (Join-Path $packageDir "USER_GUIDE.md")
 
 if (Test-Path -LiteralPath $packageZip) {

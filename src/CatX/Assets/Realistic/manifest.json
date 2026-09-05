@@ -38,8 +38,8 @@
       "loop": true
     },
     "sleep": {
-      "frames": 24,
-      "fps": 7.199999999999999,
+      "frames": 80,
+      "fps": 20.0,
       "loop": true
     },
     "lie": {

@@ -1,6 +1,6 @@
 # CatX Keyboard Guard - User Guide
 
-**Version 1.1.0**
+**Version 1.1.1**
 **Dan Roberts - DigitalRCS**
 
 CatX is a friendly Windows 11 keyboard guard for moments when a cat decides the keyboard is the best seat in the house. It temporarily ignores ordinary keyboard input while keeping the mouse available and showing an animated desktop cat.
@@ -27,7 +27,9 @@ CatX installs for the current Windows user and does not require administrator pr
 
 Use **Preview cat** to try a companion without blocking the keyboard. Preview pauses automatic locking; **Stop preview** restarts the inactivity timer from zero. The style and timing controls are disabled during preview; stop preview to choose another cat.
 
-Cats alternate between roaming, sitting, grooming, and sleeping in a bottom corner of the monitor where they started. Rapid back-and-forth cursor movement makes them excited and triggers a short chase. Normal straight cursor travel does not. **Chase playful cursor** and **Toy mouse visits** can be toggled independently even while the cat is active. The toy mouse appears occasionally and escapes before the cat reaches it. Neither animation intercepts clicks.
+Choose **Cats on screen** (1–8), then select a style for each additional cat. Original and realistic styles can be mixed. **No cat** hides all companions. More realistic cats use more memory; reduce the count if needed. **Preview cats** leaves the keyboard available. Use **Preview action** to immediately inspect Sleep, Groom, Walk, Run, or a Mouse visit; Natural resumes independent behavior. Pose choices affect preview only, never the keyboard guard.
+
+Cats alternate between roaming, sitting, grooming, and sleeping in a bottom corner of the monitor where they started. Expect the first nap around the first minute (additional cats have staggered bedtimes); naps last 30–45 seconds unless you deliberately wake the cat. Sleeping heads remain still while the tail tip twitches. Realistic cats use the supplied model's paw-washing motion; original animated cats also wipe their ears. Rapid back-and-forth cursor movement makes cats excited and triggers a short chase. **Chase playful cursor** and **Toy mouse visits** can be toggled independently even while cats are active. The toy mouse slowly emerges from a randomly placed cartoon mouse hole, ventures farther out, pauses, and returns through that same hole. Toy visits do not interrupt bedtime. No animation intercepts clicks.
 
 See [Animated cats](ANIMATED_CATS.md) for the full behavior guide and rendering details. The bundled v1.0.3 PDF covers the existing keyboard-guard controls; this guide and the animation addendum describe the new 1.1.0 features.
 

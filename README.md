@@ -23,9 +23,11 @@ CatX is currently distributed as an unsigned community application. Windows Smar
 - Offers three user-selectable recovery shortcuts.
 - Includes five original vector cat styles: Marmalade, Midnight, Snowball, Tuxedo, and Calico.
 - Adds seven realistic cats rendered in Blender: Tabby, Orange, White, Grey, Tuxedo, Black, and Bicolor. Blender is not needed at runtime.
+- Choose 1–8 companions, each with its own original or realistic style.
 - All cats can walk, sit, groom, nap in bottom corners, and get excited by quick cursor direction changes.
 - An occasional toy mouse attracts the cat and escapes before contact. Both play behaviors can be switched off.
 - **Preview cat** runs the companion without enabling the keyboard guard and pauses automatic locking until preview ends.
+- Preview actions let you immediately review sleeping, grooming, walking, running, and mouse visits. Realistic cats use the supplied paw-wash motion; original cats also wipe their ears. The local `--review` mode disables the guard and leaves saved preferences unchanged.
 - Includes a **No cat** preference for keyboard-only protection.
 - Animates a click-through cat within the working area of the monitor where the cursor was when the cat started, including monitors with negative coordinates.
 - Lets you choose how often the cat changes location.

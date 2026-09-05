@@ -20,8 +20,8 @@ The script verifies the realistic frame manifest and all expected files, runs th
 
 The finished outputs are:
 
-- `dist\CatX-Setup-1.1.0.exe` - standalone installer.
-- `dist\CatX-Windows11-1.1.0.zip` - distribution package containing a root-level `Setup.exe`, the existing 1.0.3 PDF reference, current Markdown user guide, animation addendum, README, and license.
+- `dist\CatX-Setup-1.1.1.exe` - standalone installer.
+- `dist\CatX-Windows11-1.1.1.zip` - distribution package containing a root-level `Setup.exe`, the existing 1.0.3 PDF reference, current Markdown user guide, animation addendum, README, and license.
 
 An end user extracts the ZIP and runs `Setup.exe`.
 
@@ -39,7 +39,7 @@ Microsoft SignTool is included with the Windows SDK. Use SHA-256 for the file di
 
 ```powershell
 signtool sign /fd SHA256 /td SHA256 /tr "https://your-provider.example/timestamp" /sha1 "CERTIFICATE_THUMBPRINT" ".\publish\CatX\CatX.exe"
-signtool sign /fd SHA256 /td SHA256 /tr "https://your-provider.example/timestamp" /sha1 "CERTIFICATE_THUMBPRINT" ".\dist\CatX-Setup-1.1.0.exe"
+signtool sign /fd SHA256 /td SHA256 /tr "https://your-provider.example/timestamp" /sha1 "CERTIFICATE_THUMBPRINT" ".\dist\CatX-Setup-1.1.1.exe"
 signtool verify /pa /v ".\dist\CatX-Setup-1.1.0.exe"
 ```
 

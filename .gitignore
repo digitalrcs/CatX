@@ -5,6 +5,7 @@ publish/
 artifacts/
 dist/
 tmp/
+__pycache__/
 output/pdf/CatX-User-Guide.pdf
 
 # IDE and user state

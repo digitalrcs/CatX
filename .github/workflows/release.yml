@@ -22,7 +22,7 @@ jobs:
         run: .\installer\Build-Installer.ps1
       - name: Create portable ZIP
         shell: pwsh
-        run: Compress-Archive -Path publish/CatX/CatX.exe,output/pdf/CatX-User-Guide-v1.0.3.pdf,docs/ANIMATED_CATS.md,docs/USER_GUIDE.md,LICENSE -DestinationPath CatX-win-x64.zip
+        run: Compress-Archive -Path publish/CatX/CatX.exe,output/pdf/CatX-User-Guide-v1.0.3.pdf,docs/ANIMATED_CATS.md,docs/ANIMATION_REVIEW.md,docs/USER_GUIDE.md,tools/Start-Animation-Review.cmd,LICENSE -DestinationPath CatX-win-x64.zip
       - name: Create checksums
         shell: pwsh
         run: |
@@ -38,4 +38,4 @@ jobs:
             dist/CatX-Windows11-*.zip
             output/pdf/CatX-User-Guide-v1.0.3.pdf
             SHA256SUMS.txt
-          body_path: docs/RELEASE_NOTES_1.1.0.md
+          body_path: docs/RELEASE_NOTES_1.1.1.md

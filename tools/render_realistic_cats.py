@@ -10,11 +10,17 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--output', required=True)
 parser.add_argument('--preview', action='store_true')
 parser.add_argument('--coats', default='Tabby,Orange,White,Grey,Tuxedo,Black,Bicolor')
+parser.add_argument('--clips', default='walk,run,idle,sit,groom,sleep,lie')
+parser.add_argument('--save-blend', help='Optional separate review .blend; never use the source path.')
+parser.add_argument('--indices', help='Comma-separated sparse frame indices for pose review only.')
 args = parser.parse_args(sys.argv[sys.argv.index('--')+1:])
 output = Path(args.output).resolve()
 output.mkdir(parents=True, exist_ok=True)
 scene = bpy.context.scene
 rig = bpy.data.objects['Arm_Cat']
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from catx_animation_actions import author_actions
+authored = author_actions(rig, scene)
 mesh = bpy.data.objects['Cat_LOD0']
 for obj in list(bpy.data.objects):
     if obj.type == 'MESH':
@@ -61,6 +67,7 @@ scene.render.image_settings.file_format = 'PNG'
 scene.render.image_settings.color_mode = 'RGBA'
 scene.render.image_settings.compression = 40
 scene.render.fps = 30
+scene.render.use_persistent_data = True
 scene.view_settings.view_transform = 'AgX'
 scene.world.use_nodes = True
 scene.world.node_tree.nodes.get('Background').inputs[0].default_value = (.55,.60,.7,1)
@@ -89,8 +96,8 @@ clips = {
     'run': ('Run_forward_IP', 0,14,14,True),
     'idle': ('Idle_1', 0,100,30,True),
     'sit': ('Sit_idle_1', 0,140,42,True),
-    'groom': ('Sit_wash', 0,100,50,True),
-    'sleep': ('Sleep', 0,100,24,True),
+    'groom': (authored['groom'], 0,100,50,True),
+    'sleep': (authored['sleep'], 0,120,80,True),
     'lie': ('Lie', 0,150,45,False),
 }
 coats = {'Tabby':'tiger','Orange':'orang','White':'white','Grey':'grey','Tuxedo':'Bl_wt','Black':'black','Bicolor':'Bl_wt2'}
@@ -101,10 +108,12 @@ for coat in args.coats.split(','):
     texture.image = bpy.data.images.load(str(textures / ('Cat_Color_'+coats[coat]+'.tif')), check_existing=True)
     manifest['coats'].append(coat)
     for clip,(action,start,end,count,loop) in clips.items():
+        if clip not in args.clips.split(','): continue
         rig.animation_data.action = bpy.data.actions[action]
         folder = output / coat / clip
         folder.mkdir(parents=True, exist_ok=True)
         indices = [0,count//2] if args.preview else range(count)
+        if args.indices: indices = [int(i) for i in args.indices.split(',') if int(i) < count]
         for index in indices:
             frame = start + (end-start)*index/(count if loop else count-1)
             scene.frame_set(math.floor(frame), subframe=frame%1)
@@ -114,3 +123,8 @@ for coat in args.coats.split(','):
             bpy.ops.render.render(write_still=True)
             print(f'CATX_FRAME {coat}/{clip}/{index}', flush=True)
 (output/'manifest.json').write_text(json.dumps(manifest,indent=2))
+if args.save_blend:
+    save_path = Path(args.save_blend).resolve()
+    if save_path == Path(bpy.data.filepath).resolve():
+        raise ValueError('Refusing to overwrite the supplied source model.')
+    bpy.ops.wm.save_as_mainfile(filepath=str(save_path))

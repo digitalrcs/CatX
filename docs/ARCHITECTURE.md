@@ -27,7 +27,11 @@ The hook belongs to the CatX process. Windows removes it if the process exits. `
 
 `CatOverlayWindow` is transparent, topmost, excluded from the taskbar, non-activating, and marked click-through with extended Windows styles. A 16 ms dispatcher timer advances `CatBehavior` using elapsed time, with smoothed velocity and a capped time step after a UI pause. This keeps decisions running even when a transparent window is visually still and composition callbacks pause. The selected monitor's working area and Windows cursor coordinates are converted to WPF coordinates; display changes are rechecked periodically. The overlay mirrors left-facing source artwork based on horizontal velocity. Closing it stops the timer, detaches its callback, and closes its decorative mouse window.
 
-The five original styles use vector geometry with walking, grooming, and resting poses. Seven realistic styles use embedded PNGs rendered from the supplied Blender rig. `RealisticCatFrames` loads only the selected coat, freezes the decoded images, and supplies interpolated clip frames. Clip changes briefly crossfade. Blender is an offline authoring dependency only. See `tools/render_realistic_cats.py` and `docs/ANIMATED_CATS.md`.
+The five original styles use vector geometry with walking, grooming, and resting poses. Seven realistic styles use embedded PNGs rendered from the supplied Blender rig. `RealisticCatFrames` loads only the selected coat, freezes the decoded images, and supplies one complete clip frame at a time. Full-body alpha blending is deliberately avoided because it draws duplicate limbs. Blender is an offline authoring dependency only. See `tools/render_realistic_cats.py` and `docs/ANIMATED_CATS.md`.
+
+Bedtime is scheduled independently of random roaming and cannot be preempted by a toy visit. The toy follows a bounded horizontal out-and-back route at 80 DIP/second from a random working-area location; the cat stalks at up to 70 DIP/second toward a stand-off point. Roomy monitors allow longer 340–640 DIP excursions. `ToyMouseWindow` clips the mouse at the doorway plane to reveal and hide it progressively. Hole and mouse share one non-activating, click-through window and the cat's cleanup lifecycle.
+
+`CatRoster` resolves backwards-compatible settings into 1–8 per-cat preference copies. `MainWindow` owns and closes all overlays as a group, including partial-start failures. Initial positions and bedtimes are staggered. All selected coats are decoded before enabling the keyboard hook. Preview action selection can force in-place pose playback without a keyboard hook or waiting for a random activity.
 
 `CatBehavior` owns idle, walking, sitting, grooming, lying down, sleeping, waking, and chase states. `CursorExcitement` recognizes fast direction changes while rejecting steady movement and cursor jumps. `ToyMouseWindow` is also non-activating and click-through. Its moving target escapes before contact, and actual cursor play has priority. All positions stay in memory. The preview UI runs the same overlay while leaving the guard disabled and pausing automatic locking.
 
@@ -35,7 +39,7 @@ The application icon and DigitalRCS logo are compiled WPF resources. Installer p
 
 ### Settings
 
-`SettingsService` serializes six preferences as JSON: cat style, recovery chord, roaming interval, optional auto-lock delay, cursor play, and toy mouse visits. Missing play preferences default to enabled; auto-lock defaults to off. Malformed JSON falls back to safe defaults. `UserActivityMonitor` reads only Windows' last-input timestamp. Keyboard or mouse activity resets the inactivity countdown. Idle time from before launch, a preference change, an unlock, or the end of preview is not counted.
+`SettingsService` serializes preferences as JSON: first cat style, cat count, additional styles, recovery chord, roaming interval, optional auto-lock delay, cursor play, and toy mouse visits. Old files default to one cat; invalid counts/styles are bounded by `CatRoster`. Missing play preferences default to enabled; auto-lock defaults to off. Malformed JSON falls back to safe defaults. `UserActivityMonitor` reads only Windows' last-input timestamp. Keyboard or mouse activity resets the inactivity countdown. Idle time from before launch, a preference change, an unlock, or the end of preview is not counted.
 
 ## Trust boundaries
 

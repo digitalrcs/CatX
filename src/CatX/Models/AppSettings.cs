@@ -3,6 +3,8 @@ namespace CatX.Models;
 public sealed class AppSettings
 {
     public string CatStyle { get; set; } = "Marmalade";
+    public int CatCount { get; set; } = 1;
+    public List<string> AdditionalCatStyles { get; set; } = [];
     public UnlockChord UnlockChord { get; set; } = UnlockChord.CtrlAltK;
     public int RoamEverySeconds { get; set; } = 8;
     public int AutoLockAfterSeconds { get; set; }
