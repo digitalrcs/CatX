@@ -51,7 +51,13 @@
                 <TextBlock Text="DESKTOP CAT" Foreground="#7A8589" FontWeight="Bold" FontSize="11"/>
                 <ComboBox x:Name="CatStyleCombo" Margin="0,5,0,12" SelectionChanged="PreferenceChanged">
                     <ComboBoxItem Content="No cat"/><ComboBoxItem Content="Marmalade"/><ComboBoxItem Content="Midnight"/><ComboBoxItem Content="Snowball"/><ComboBoxItem Content="Tuxedo"/><ComboBoxItem Content="Calico"/>
+                    <ComboBoxItem Content="Realistic Tabby"/><ComboBoxItem Content="Realistic Orange"/><ComboBoxItem Content="Realistic White"/><ComboBoxItem Content="Realistic Grey"/><ComboBoxItem Content="Realistic Tuxedo"/><ComboBoxItem Content="Realistic Black"/><ComboBoxItem Content="Realistic Bicolor"/>
                 </ComboBox>
+                <WrapPanel Margin="0,0,0,10">
+                    <CheckBox x:Name="ChaseCursorCheck" Content="Chase playful cursor" Margin="0,0,16,4" Checked="BehaviorPreferenceChanged" Unchecked="BehaviorPreferenceChanged" ToolTip="Quick mouse direction changes excite the cat. Cursor positions stay in memory only."/>
+                    <CheckBox x:Name="PlayfulMouseCheck" Content="Toy mouse visits" Margin="0,0,0,4" Checked="BehaviorPreferenceChanged" Unchecked="BehaviorPreferenceChanged"/>
+                </WrapPanel>
+                <Button x:Name="PreviewButton" Content="Preview cat" Click="PreviewButton_Click" Margin="0,0,0,12" Padding="8,5" ToolTip="Play with your cat while the keyboard stays available."/>
                 <TextBlock Text="UNLOCK COMBINATION" Foreground="#7A8589" FontWeight="Bold" FontSize="11"/>
                 <ComboBox x:Name="UnlockCombo" Margin="0,5,0,12" SelectionChanged="PreferenceChanged">
                     <ComboBoxItem Content="Ctrl + Alt + K" Tag="CtrlAltK"/><ComboBoxItem Content="Ctrl + Shift + F12" Tag="CtrlShiftF12"/><ComboBoxItem Content="Alt + Shift + Pause" Tag="AltShiftPause"/>

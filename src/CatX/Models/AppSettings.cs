@@ -6,6 +6,8 @@ public sealed class AppSettings
     public UnlockChord UnlockChord { get; set; } = UnlockChord.CtrlAltK;
     public int RoamEverySeconds { get; set; } = 8;
     public int AutoLockAfterSeconds { get; set; }
+    public bool ChaseCursor { get; set; } = true;
+    public bool PlayfulMouse { get; set; } = true;
 }
 
 public enum UnlockChord

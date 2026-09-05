@@ -2,6 +2,14 @@
 
 All notable CatX changes are documented here. The project follows [Semantic Versioning](https://semver.org/).
 
+## [1.1.0] - 2026-09-05
+
+- Added seven realistic coats rendered from the supplied Blender cat rig, with walk, run, idle, sit, grooming, lie-down, sleep, and waking animations.
+- Shared time-based behavior and smooth movement for all cats, including corner naps and excited cursor chasing.
+- Added an occasional escaping toy mouse and independent play preferences.
+- Added a keyboard-safe preview that pauses automatic locking until it is stopped.
+- Documented in-memory cursor sampling and source-asset provenance.
+
 ## [1.0.3] - 2026-09-03
 
 ### Fixed
@@ -57,3 +65,4 @@ All notable CatX changes are documented here. The project follows [Semantic Vers
 [1.0.1]: https://github.com/digitalrcs/CatX/releases/tag/v1.0.1
 [1.0.2]: https://github.com/digitalrcs/CatX/releases/tag/v1.0.2
 [1.0.3]: https://github.com/digitalrcs/CatX/releases/tag/v1.0.3
+[1.1.0]: https://github.com/digitalrcs/CatX/releases/tag/v1.1.0

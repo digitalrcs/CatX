@@ -22,8 +22,12 @@ CatX is currently distributed as an unsigned community application. Windows Smar
 - Blocks ordinary keyboard input with a Windows low-level keyboard hook.
 - Offers three user-selectable recovery shortcuts.
 - Includes five original vector cat styles: Marmalade, Midnight, Snowball, Tuxedo, and Calico.
+- Adds seven realistic cats rendered in Blender: Tabby, Orange, White, Grey, Tuxedo, Black, and Bicolor. Blender is not needed at runtime.
+- All cats can walk, sit, groom, nap in bottom corners, and get excited by quick cursor direction changes.
+- An occasional toy mouse attracts the cat and escapes before contact. Both play behaviors can be switched off.
+- **Preview cat** runs the companion without enabling the keyboard guard and pauses automatic locking until preview ends.
 - Includes a **No cat** preference for keyboard-only protection.
-- Animates a click-through cat across the entire Windows virtual desktop, including multiple monitors.
+- Animates a click-through cat within the working area of the monitor where the cursor was when the cat started, including monitors with negative coordinates.
 - Lets you choose how often the cat changes location.
 - Can automatically enable the guard after an optional inactivity period; keyboard or mouse activity resets the timer.
 - Saves preferences locally in `%LOCALAPPDATA%\CatX\settings.json`.
@@ -98,13 +102,13 @@ Additional project information:
 
 - The release is for 64-bit Windows 11 (`win-x64`). ARM64 is not packaged yet.
 - CatX protects the current interactive desktop session; it is not a driver or Windows service.
-- Cat artwork is vector-based and built into the application. Importing custom animation files is planned, not yet implemented.
+- Realistic animations are transparent frame sequences baked from the supplied Blender rig. Arbitrary model importing is not exposed in the app.
 - Release executables are not currently code-signed.
 
 ## Artwork and naming
 
-All cats in CatX are original artwork created for this project. CatX is not affiliated with Garfield, Paws, Inc., or any other fictional-cat property.
+The five vector cats are original artwork created for this project. Realistic cats use the owner-supplied Blender model and textures; their original asset license remains applicable. See [realistic cats and animation build instructions](docs/ANIMATED_CATS.md). CatX is not affiliated with Garfield, Paws, Inc., or any other fictional-cat property.
 
 ## License
 
-CatX is available under the [MIT License](LICENSE).
+CatX source code is available under the [MIT License](LICENSE). The supplied third-party Blender model and its rendered realistic-cat assets are not relicensed under MIT.

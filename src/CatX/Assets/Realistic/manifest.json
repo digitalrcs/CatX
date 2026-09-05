@@ -1,0 +1,51 @@
+{
+  "width": 256,
+  "height": 224,
+  "facing": "left",
+  "coats": [
+    "Tabby",
+    "Orange",
+    "White",
+    "Grey",
+    "Tuxedo",
+    "Black",
+    "Bicolor"
+  ],
+  "clips": {
+    "walk": {
+      "frames": 24,
+      "fps": 30.0,
+      "loop": true
+    },
+    "run": {
+      "frames": 14,
+      "fps": 30.0,
+      "loop": true
+    },
+    "idle": {
+      "frames": 30,
+      "fps": 9.0,
+      "loop": true
+    },
+    "sit": {
+      "frames": 42,
+      "fps": 9.0,
+      "loop": true
+    },
+    "groom": {
+      "frames": 50,
+      "fps": 15.0,
+      "loop": true
+    },
+    "sleep": {
+      "frames": 24,
+      "fps": 7.199999999999999,
+      "loop": true
+    },
+    "lie": {
+      "frames": 45,
+      "fps": 9.0,
+      "loop": false
+    }
+  }
+}

@@ -18,6 +18,9 @@ jobs:
           dotnet-version: 8.0.x
       - name: Restore
         run: dotnet restore CatX.sln
+      - name: Verify realistic animation assets
+        shell: pwsh
+        run: .\tools\Test-RealisticAssets.ps1
       - name: Build
         run: dotnet build CatX.sln --configuration Release --no-restore
       - name: Test recovery-key state tracking

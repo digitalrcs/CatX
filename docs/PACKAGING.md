@@ -16,12 +16,12 @@ From the repository root:
 .\installer\Build-Installer.ps1
 ```
 
-The script runs the Release tests, publishes a self-contained single-file `win-x64` build to `publish\CatX`, verifies the PDF user guide, compiles `installer\CatX.iss`, and creates the end-user ZIP package.
+The script verifies the realistic frame manifest and all expected files, runs the Release tests, publishes a self-contained single-file `win-x64` build to `publish\CatX`, verifies the PDF user guide, compiles `installer\CatX.iss`, and creates the end-user ZIP package. Finish the Blender render before packaging; see [Animated cats](ANIMATED_CATS.md). Only rendered frames are embedded; users do not need Blender or the source model.
 
 The finished outputs are:
 
-- `dist\CatX-Setup-1.0.3.exe` - standalone installer.
-- `dist\CatX-Windows11-1.0.3.zip` - distribution package containing a root-level `Setup.exe`, user guide, README, and license.
+- `dist\CatX-Setup-1.1.0.exe` - standalone installer.
+- `dist\CatX-Windows11-1.1.0.zip` - distribution package containing a root-level `Setup.exe`, the existing 1.0.3 PDF reference, current Markdown user guide, animation addendum, README, and license.
 
 An end user extracts the ZIP and runs `Setup.exe`.
 
@@ -39,8 +39,8 @@ Microsoft SignTool is included with the Windows SDK. Use SHA-256 for the file di
 
 ```powershell
 signtool sign /fd SHA256 /td SHA256 /tr "https://your-provider.example/timestamp" /sha1 "CERTIFICATE_THUMBPRINT" ".\publish\CatX\CatX.exe"
-signtool sign /fd SHA256 /td SHA256 /tr "https://your-provider.example/timestamp" /sha1 "CERTIFICATE_THUMBPRINT" ".\dist\CatX-Setup-1.0.3.exe"
-signtool verify /pa /v ".\dist\CatX-Setup-1.0.3.exe"
+signtool sign /fd SHA256 /td SHA256 /tr "https://your-provider.example/timestamp" /sha1 "CERTIFICATE_THUMBPRINT" ".\dist\CatX-Setup-1.1.0.exe"
+signtool verify /pa /v ".\dist\CatX-Setup-1.1.0.exe"
 ```
 
 Official SignTool reference: [Microsoft Learn](https://learn.microsoft.com/windows/win32/seccrypto/signtool)

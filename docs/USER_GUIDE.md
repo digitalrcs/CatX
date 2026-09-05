@@ -1,6 +1,6 @@
 # CatX Keyboard Guard - User Guide
 
-**Version 1.0.3**
+**Version 1.1.0**
 **Dan Roberts - DigitalRCS**
 
 CatX is a friendly Windows 11 keyboard guard for moments when a cat decides the keyboard is the best seat in the house. It temporarily ignores ordinary keyboard input while keeping the mouse available and showing an animated desktop cat.
@@ -23,6 +23,13 @@ CatX installs for the current Windows user and does not require administrator pr
 
 - **No cat** - keyboard protection without a desktop animation.
 - **Marmalade, Midnight, Snowball, Tuxedo, or Calico** - original animated vector cats.
+- **Realistic Tabby, Orange, White, Grey, Tuxedo, Black, or Bicolor** - textured animations rendered from the Blender cat rig. No Blender installation is needed.
+
+Use **Preview cat** to try a companion without blocking the keyboard. Preview pauses automatic locking; **Stop preview** restarts the inactivity timer from zero. The style and timing controls are disabled during preview; stop preview to choose another cat.
+
+Cats alternate between roaming, sitting, grooming, and sleeping in a bottom corner of the monitor where they started. Rapid back-and-forth cursor movement makes them excited and triggers a short chase. Normal straight cursor travel does not. **Chase playful cursor** and **Toy mouse visits** can be toggled independently even while the cat is active. The toy mouse appears occasionally and escapes before the cat reaches it. Neither animation intercepts clicks.
+
+See [Animated cats](ANIMATED_CATS.md) for the full behavior guide and rendering details. The bundled v1.0.3 PDF covers the existing keyboard-guard controls; this guide and the animation addendum describe the new 1.1.0 features.
 
 ### Unlock combination
 

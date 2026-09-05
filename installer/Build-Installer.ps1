@@ -19,6 +19,8 @@ if ([string]::IsNullOrWhiteSpace($version)) {
     throw "CatX version was not found in $project"
 }
 
+& (Join-Path $repoRoot "tools\Test-RealisticAssets.ps1")
+
 dotnet test $solution --configuration $Configuration
 if ($LASTEXITCODE -ne 0) { throw "Tests failed." }
 
@@ -69,6 +71,8 @@ Copy-Item -LiteralPath $setup -Destination (Join-Path $packageDir "Setup.exe")
 Copy-Item -LiteralPath $guide -Destination (Join-Path $packageDir "CatX-User-Guide.pdf")
 Copy-Item -LiteralPath $packageReadme -Destination (Join-Path $packageDir "README.txt")
 Copy-Item -LiteralPath (Join-Path $repoRoot "LICENSE") -Destination (Join-Path $packageDir "LICENSE.txt")
+Copy-Item -LiteralPath (Join-Path $repoRoot "docs\ANIMATED_CATS.md") -Destination (Join-Path $packageDir "ANIMATED_CATS.md")
+Copy-Item -LiteralPath (Join-Path $repoRoot "docs\USER_GUIDE.md") -Destination (Join-Path $packageDir "USER_GUIDE.md")
 
 if (Test-Path -LiteralPath $packageZip) {
     Remove-Item -LiteralPath $packageZip -Force

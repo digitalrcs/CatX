@@ -25,20 +25,22 @@ The hook belongs to the CatX process. Windows removes it if the process exits. `
 
 ### Cat overlay
 
-`CatOverlayWindow` is transparent, topmost, excluded from the taskbar, non-activating, and marked click-through with extended Windows styles. WPF animations move the window within `SystemParameters.VirtualScreen*`, which covers the combined multi-monitor desktop. The overlay mirrors every cat from its left-facing source orientation when moving right, so the cat always faces its travel direction.
+`CatOverlayWindow` is transparent, topmost, excluded from the taskbar, non-activating, and marked click-through with extended Windows styles. A 16 ms dispatcher timer advances `CatBehavior` using elapsed time, with smoothed velocity and a capped time step after a UI pause. This keeps decisions running even when a transparent window is visually still and composition callbacks pause. The selected monitor's working area and Windows cursor coordinates are converted to WPF coordinates; display changes are rechecked periodically. The overlay mirrors left-facing source artwork based on horizontal velocity. Closing it stops the timer, detaches its callback, and closes its decorative mouse window.
 
-The five cat styles recolor built-in vector shapes and use eased WPF property animations. No cat artwork is loaded from executable or remote content.
+The five original styles use vector geometry with walking, grooming, and resting poses. Seven realistic styles use embedded PNGs rendered from the supplied Blender rig. `RealisticCatFrames` loads only the selected coat, freezes the decoded images, and supplies interpolated clip frames. Clip changes briefly crossfade. Blender is an offline authoring dependency only. See `tools/render_realistic_cats.py` and `docs/ANIMATED_CATS.md`.
+
+`CatBehavior` owns idle, walking, sitting, grooming, lying down, sleeping, waking, and chase states. `CursorExcitement` recognizes fast direction changes while rejecting steady movement and cursor jumps. `ToyMouseWindow` is also non-activating and click-through. Its moving target escapes before contact, and actual cursor play has priority. All positions stay in memory. The preview UI runs the same overlay while leaving the guard disabled and pausing automatic locking.
 
 The application icon and DigitalRCS logo are compiled WPF resources. Installer packaging remains self-contained and does not download artwork or executable content at runtime.
 
 ### Settings
 
-`SettingsService` serializes four non-sensitive preferences as JSON: cat style, recovery chord, roaming interval, and optional auto-lock delay. Malformed JSON falls back to safe defaults. Auto-lock is off by default. When enabled, `UserActivityMonitor` reads only Windows' last-input timestamp. Keyboard or mouse activity resets the inactivity countdown, and the guard activates only after the selected period with no input. Idle time from before launch, a preference change, or an unlock is not counted.
+`SettingsService` serializes six preferences as JSON: cat style, recovery chord, roaming interval, optional auto-lock delay, cursor play, and toy mouse visits. Missing play preferences default to enabled; auto-lock defaults to off. Malformed JSON falls back to safe defaults. `UserActivityMonitor` reads only Windows' last-input timestamp. Keyboard or mouse activity resets the inactivity countdown. Idle time from before launch, a preference change, an unlock, or the end of preview is not counted.
 
 ## Trust boundaries
 
 - **Keyboard input:** observed and suppressed locally only while the guard is enabled; never stored or transmitted.
-- **Mouse input:** never hooked or suppressed. Its Windows last-input timestamp resets the optional inactivity timer.
+- **Mouse input:** never hooked, suppressed, moved, or clicked. Its Windows last-input timestamp resets the optional inactivity timer. While an overlay is active, cursor coordinates are sampled in memory for play behavior and never persisted.
 - **Network:** CatX has no networking code.
 - **Files:** CatX writes only its local preferences file during normal operation.
 - **Privileges:** standard user privileges are sufficient and expected.

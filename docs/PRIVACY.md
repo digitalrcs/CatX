@@ -6,6 +6,8 @@ CatX is designed to work entirely on the local Windows computer.
 
 The keyboard hook receives low-level key events while the guard is active solely to detect the configured recovery chord and suppress other input. CatX does not translate those events into text, log them, save them, or transmit them.
 
+While a cat or preview is active, the overlay samples the Windows cursor position in memory to recognize quick direction changes and animate cursor chasing. Positions are not logged, saved, or transmitted. The decorative toy mouse does not control or click the real cursor. Closing the cat stops sampling.
+
 ## Data CatX stores
 
 CatX stores only these preferences in `%LOCALAPPDATA%\CatX\settings.json`:
@@ -14,6 +16,7 @@ CatX stores only these preferences in `%LOCALAPPDATA%\CatX\settings.json`:
 - selected recovery shortcut;
 - cat movement interval.
 - optional auto-lock delay.
+- cursor-chasing and toy-mouse preferences.
 
 The file can be deleted at any time to reset preferences.
 

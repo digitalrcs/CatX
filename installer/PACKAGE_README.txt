@@ -1,4 +1,4 @@
-CatX Keyboard Guard 1.0.3 for Windows 11
+CatX Keyboard Guard 1.1.0 for Windows 11
 Dan Roberts - DigitalRCS
 
 INSTALL
@@ -18,6 +18,9 @@ choosing More info and Run anyway.
 
 The included CatX-User-Guide.pdf contains setup, safety, recovery,
 troubleshooting, privacy, and uninstall instructions.
+USER_GUIDE.md and ANIMATED_CATS.md describe the new realistic cats,
+keyboard-safe preview, cursor chasing, and toy mouse play in 1.1.0.
+The PDF is the existing 1.0.3 keyboard-guard reference.
 
 SYSTEM REQUIREMENTS
 

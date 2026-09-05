@@ -22,6 +22,7 @@ public partial class MainWindow : Window
     private long? _autoLockMonitoringStartedAt;
     private bool _trayTipShown;
     private bool _loading = true;
+    private bool _previewing;
 
     public MainWindow()
     {
@@ -42,6 +43,8 @@ public partial class MainWindow : Window
         SelectByTag(UnlockCombo, _settings.UnlockChord.ToString());
         SelectByTag(RoamCombo, _settings.RoamEverySeconds.ToString());
         SelectByTag(AutoLockCombo, _settings.AutoLockAfterSeconds.ToString());
+        ChaseCursorCheck.IsChecked = _settings.ChaseCursor;
+        PlayfulMouseCheck.IsChecked = _settings.PlayfulMouse;
     }
 
     private static void SelectByContent(System.Windows.Controls.ComboBox comboBox, string value) => comboBox.SelectedItem = comboBox.Items.OfType<ComboBoxItem>().FirstOrDefault(item => Equals(item.Content, value)) ?? comboBox.Items[0];
@@ -72,7 +75,7 @@ public partial class MainWindow : Window
     private static Icon LoadTrayIcon()
     {
         var resource = System.Windows.Application.GetResourceStream(
-            new Uri("pack://application:,,,/Assets/CatX.ico", UriKind.Absolute));
+            new Uri("pack://application:,,,/CatX;component/Assets/CatX.ico", UriKind.Absolute));
         if (resource is null)
             return (Icon)SystemIcons.Application.Clone();
 
@@ -96,6 +99,53 @@ public partial class MainWindow : Window
     private void GuardButton_Click(object sender, RoutedEventArgs e)
     {
         if (_keyboardGuard.IsActive) DisableGuard("Guard disabled with the mouse."); else EnableGuard();
+    }
+
+    private void BehaviorPreferenceChanged(object sender, RoutedEventArgs e)
+    {
+        if (_loading) return;
+        _settings.ChaseCursor = ChaseCursorCheck.IsChecked == true;
+        _settings.PlayfulMouse = PlayfulMouseCheck.IsChecked == true;
+        _settingsService.Save(_settings);
+        _overlay?.ApplyPreferences(_settings);
+    }
+
+    private void PreviewButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (_previewing)
+        {
+            StopPreview();
+            ScheduleAutoLock(true);
+            return;
+        }
+        if (_settings.CatStyle == "No cat" || _keyboardGuard.IsActive) return;
+        try
+        {
+            _overlay = new CatOverlayWindow(_settings);
+            _overlay.Show();
+            _previewing = true;
+            // Preview must never unexpectedly lock the keyboard while the user is trying a cat.
+            _autoLockTimer.Stop();
+            _autoLockMonitoringStartedAt = null;
+            PreviewButton.Content = "Stop preview";
+            StatusTitle.Text = "Cat preview";
+            StatusDetail.Text = "Your keyboard is active. Wiggle the mouse to play.";
+            UpdatePreferenceAvailability(false);
+        }
+        catch (Exception ex)
+        {
+            _overlay?.Close(); _overlay = null;
+            System.Windows.MessageBox.Show(this, ex.Message, "Cat preview unavailable", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    private void StopPreview()
+    {
+        if (!_previewing) return;
+        _overlay?.Close(); _overlay = null;
+        _previewing = false;
+        PreviewButton.Content = "Preview cat";
+        UpdatePreferenceAvailability(false);
     }
 
     private void MainWindow_StateChanged(object? sender, EventArgs e)
@@ -143,6 +193,7 @@ public partial class MainWindow : Window
 
     private void EnableGuard()
     {
+        StopPreview();
         try
         {
             _autoLockTimer.Stop();
@@ -184,15 +235,17 @@ public partial class MainWindow : Window
 
     private void UpdatePreferenceAvailability(bool locked)
     {
-        CatStyleCombo.IsEnabled = UnlockCombo.IsEnabled = AutoLockCombo.IsEnabled = !locked;
-        RoamCombo.IsEnabled = !locked && _settings.CatStyle != "No cat";
+        CatStyleCombo.IsEnabled = UnlockCombo.IsEnabled = AutoLockCombo.IsEnabled = !locked && !_previewing;
+        RoamCombo.IsEnabled = !locked && !_previewing && _settings.CatStyle != "No cat";
+        PreviewButton.IsEnabled = !locked && _settings.CatStyle != "No cat";
+        ChaseCursorCheck.IsEnabled = PlayfulMouseCheck.IsEnabled = _settings.CatStyle != "No cat";
     }
 
     private void ScheduleAutoLock(bool updateIdleStatus = false)
     {
         _autoLockTimer.Stop();
         _autoLockMonitoringStartedAt = null;
-        if (_keyboardGuard.IsActive) return;
+        if (_keyboardGuard.IsActive || _previewing) return;
         if (_settings.AutoLockAfterSeconds <= 0)
         {
             if (updateIdleStatus)

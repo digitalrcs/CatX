@@ -8,7 +8,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <AssemblyName>CatX</AssemblyName>
     <RootNamespace>CatX</RootNamespace>
-    <Version>1.0.3</Version>
+    <Version>1.1.0</Version>
     <Authors>Dan Roberts</Authors>
     <Company>Dan Roberts DigitalRCS</Company>
     <Product>CatX Keyboard Guard</Product>
@@ -27,5 +27,7 @@
     <None Remove="Assets\CatX.ico" />
     <Resource Include="Assets\*.png" />
     <Resource Include="Assets\CatX.ico" />
+    <None Remove="Assets\Realistic\**\*.png;Assets\Realistic\manifest.json" />
+    <Resource Include="Assets\Realistic\**\*.png;Assets\Realistic\*.json" />
   </ItemGroup>
 </Project>

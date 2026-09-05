@@ -1,27 +1,34 @@
 <Window x:Class="CatX.CatOverlayWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Width="230" Height="170" WindowStyle="None" AllowsTransparency="True"
+        Width="256" Height="224" WindowStyle="None" AllowsTransparency="True" ShowActivated="False"
         Background="Transparent" Topmost="True" ShowInTaskbar="False"
         ResizeMode="NoResize" IsHitTestVisible="False" Focusable="False">
-    <Canvas x:Name="Stage" Width="230" Height="170" RenderTransformOrigin="0.5,0.5">
+    <Canvas x:Name="Stage" Width="256" Height="224" RenderTransformOrigin="0.5,0.5">
         <Canvas.RenderTransform><ScaleTransform x:Name="DirectionTransform" ScaleX="1"/></Canvas.RenderTransform>
-        <Ellipse Width="168" Height="18" Canvas.Left="31" Canvas.Top="146" Fill="#28000000"/>
-        <Canvas x:Name="CatBody" Canvas.Left="4" Canvas.Top="2">
+        <Ellipse x:Name="GroundShadow" Width="168" Height="12" Canvas.Left="44" Canvas.Top="200" Fill="#18000000"/>
+        <Canvas x:Name="CatBody" Canvas.Left="14" Canvas.Top="44">
+            <Canvas.RenderTransform><ScaleTransform x:Name="RestTransform" CenterX="115" CenterY="164"/></Canvas.RenderTransform>
             <Path x:Name="Tail" Data="M 172,92 C 221,87 220,43 191,46 C 177,48 181,66 193,64" Stroke="#F49A4A" StrokeThickness="14" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Fill="Transparent"/>
             <Ellipse x:Name="Body" Width="138" Height="78" Canvas.Left="56" Canvas.Top="70" Fill="#F49A4A"/>
             <Ellipse x:Name="Chest" Width="63" Height="58" Canvas.Left="59" Canvas.Top="88" Fill="#FFC982" Opacity="0.65"/>
+            <Path x:Name="BodyPatch" Data="M 137,75 C 157,70 179,75 187,91 C 187,99 184,106 180,111 C 163,108 149,103 140,95 C 138,88 137,81 137,75 Z" Fill="Transparent"/>
+            <Canvas x:Name="Face">
+            <Canvas.RenderTransform><RotateTransform x:Name="HeadTilt" CenterX="63" CenterY="100"/></Canvas.RenderTransform>
             <Ellipse x:Name="Head" Width="89" Height="83" Canvas.Left="18" Canvas.Top="45" Fill="#F49A4A"/>
             <Polygon x:Name="LeftEar" Points="27,60 37,18 60,54" Fill="#F49A4A"/>
             <Polygon x:Name="RightEar" Points="70,52 95,21 99,69" Fill="#F49A4A"/>
             <Polygon Points="34,55 39,34 50,55" Fill="#E97963"/><Polygon Points="78,51 92,34 93,60" Fill="#E97963"/>
             <!-- The crown and flank markings stay inside their intended body regions and below all facial details. -->
             <Path x:Name="HeadPatch" Data="M 55,47 C 65,43 81,45 91,54 C 89,60 87,65 84,69 C 75,65 65,66 58,70 C 56,62 55,54 55,47 Z" Fill="Transparent"/>
-            <Path x:Name="BodyPatch" Data="M 137,75 C 157,70 179,75 187,91 C 187,99 184,106 180,111 C 163,108 149,103 140,95 C 138,88 137,81 137,75 Z" Fill="Transparent"/>
+            <Canvas x:Name="OpenEyes">
             <Ellipse Width="13" Height="18" Canvas.Left="43" Canvas.Top="72" Fill="#253238"/><Ellipse Width="13" Height="18" Canvas.Left="73" Canvas.Top="72" Fill="#253238"/>
             <Ellipse Width="5" Height="5" Canvas.Left="47" Canvas.Top="75" Fill="White"/><Ellipse Width="5" Height="5" Canvas.Left="77" Canvas.Top="75" Fill="White"/>
+            </Canvas>
+            <Path x:Name="ClosedEyes" Visibility="Collapsed" Data="M 43,81 Q 50,87 57,81 M 73,81 Q 80,87 87,81" Stroke="#697386" StrokeThickness="3"/>
             <Polygon Points="57,94 69,94 63,102" Fill="#A84F59"/>
             <Path Data="M 63,102 Q 63,111 53,108 M 63,102 Q 65,111 74,108 M 47,99 L 15,94 M 47,107 L 12,113 M 79,99 L 111,94 M 79,107 L 113,114" Stroke="#253238" StrokeThickness="2.5" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Fill="Transparent"/>
+            </Canvas>
             <Rectangle x:Name="FrontLeg" Width="25" Height="48" RadiusX="12" Canvas.Left="76" Canvas.Top="116" Fill="#F49A4A" RenderTransformOrigin="0.5,0">
                 <Rectangle.RenderTransform><RotateTransform x:Name="FrontLegRotate" Angle="7"/></Rectangle.RenderTransform>
             </Rectangle>
@@ -29,5 +36,11 @@
                 <Rectangle.RenderTransform><RotateTransform x:Name="BackLegRotate" Angle="-7"/></Rectangle.RenderTransform>
             </Rectangle>
         </Canvas>
+        <Canvas x:Name="RealisticLayer" Width="256" Height="224" Visibility="Collapsed">
+            <Image x:Name="RealisticFrame" Width="256" Height="224" RenderOptions.BitmapScalingMode="HighQuality"/>
+            <Image x:Name="RealisticNextFrame" Width="256" Height="224" RenderOptions.BitmapScalingMode="HighQuality"/>
+            <Image x:Name="TransitionFrame" Width="256" Height="224" RenderOptions.BitmapScalingMode="HighQuality"/>
+        </Canvas>
+        <TextBlock x:Name="MoodIndicator" Canvas.Left="110" Canvas.Top="35" FontSize="20" Foreground="#E0A83B" FontWeight="Bold"/>
     </Canvas>
 </Window>
