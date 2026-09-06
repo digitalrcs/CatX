@@ -1,6 +1,6 @@
 # CatX
 
-CatX is a friendly Windows 11 keyboard guard for anyone whose cat believes a keyboard is a heated bed. When the guard is enabled, ordinary keyboard input is ignored until you hold your chosen recovery shortcut. While the keys are guarded, an original animated cat wanders around the desktop.
+CatX is a friendly Windows 11 keyboard guard for anyone whose cat believes a keyboard is a heated bed. When the guard is enabled, ordinary keyboard input is ignored until you hold your chosen recovery shortcut. While the keys are guarded, your chosen animated cats wander, play, and nap around the desktop.
 
 ![Windows 11](https://img.shields.io/badge/Windows-11-0078D4?logo=windows11&logoColor=white)
 ![.NET 8](https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet)
@@ -12,10 +12,26 @@ CatX is a friendly Windows 11 keyboard guard for anyone whose cat believes a key
 1. Open the [latest CatX release](https://github.com/digitalrcs/CatX/releases/latest).
 2. Download `CatX-Windows11-<version>.zip`, extract all files, and run `Setup.exe` for a normal Windows installation. The standalone installer and portable build may also be provided separately.
 3. Launch CatX on a 64-bit Windows 11 PC.
-4. Choose a cat, recovery shortcut, and movement interval.
+4. Choose your cats, recovery shortcut, and movement interval.
 5. Press **Enable keyboard guard** and immediately test the displayed shortcut.
 
 CatX is currently distributed as an unsigned community application. Windows SmartScreen may show **Windows protected your PC** on first launch. Confirm that the publisher is unknown, select **More info**, and choose **Run anyway** only if the download came from this repository. A future release may be code-signed.
+
+## Meet CatX
+
+Set up your cats and keyboard guard in one simple window.
+
+![CatX main window with three cats selected and the keyboard guard ready](docs/images/main-window.png)
+
+**Twelve personalities to choose from.** Mix original illustrated cats and realistic coats; Ctrl-click up to eight names in the dropdown.
+
+![All twelve CatX cat styles, labeled by name](docs/images/cat-styles.png)
+
+**A little life on your desktop.** Cats find their own nap spots while one shared mouse gathers cheese and brings it home. This staged scene uses the application's actual renderer.
+
+![Three cats napping in separate spots while a mouse carries cheese toward its hole](docs/images/naps-and-cheese.png)
+
+Visit the **[CatX wiki](https://github.com/digitalrcs/CatX/wiki)** for a quick start, illustrated guides, and troubleshooting.
 
 ## Features
 

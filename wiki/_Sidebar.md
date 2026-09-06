@@ -1,15 +1,23 @@
-**CatX Keyboard Guard**
+**CatX · Paws off. Keys safe.**
 
-- [Home](Home)
+[Home](Home)
+
+**Get started**
 - [Installation](Installation)
+- [Quick start](Quick-Start)
 - [User guide](User-Guide)
+
+**Meet the companions**
+- [Cats and behaviors](Cats-and-Behaviors)
+- [Mouse and cheese](Mouse-and-Cheese)
+
+**Help**
 - [Safety and recovery](Safety-and-Recovery)
-- [Privacy](Privacy)
+- [Troubleshooting](Troubleshooting)
 - [FAQ](FAQ)
+- [Privacy](Privacy)
+
+**Project**
 - [Building from source](Building-from-Source)
-
----
-
-- [Latest release](https://github.com/digitalrcs/CatX/releases/latest)
-- [Source repository](https://github.com/digitalrcs/CatX)
-- [Report an issue](https://github.com/digitalrcs/CatX/issues)
+- [Download latest](https://github.com/digitalrcs/CatX/releases/latest)
+- [Report an issue](https://github.com/digitalrcs/CatX/issues/new/choose)

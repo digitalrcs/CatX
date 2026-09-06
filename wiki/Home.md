@@ -1,24 +1,36 @@
-# CatX Keyboard Guard
+# Paws off. Keys safe.
 
-![DigitalRCS](https://raw.githubusercontent.com/digitalrcs/CatX/main/src/CatX/Assets/DigitalRCS_Logo.png)
+**A friendly keyboard guard with a desktop full of character.**
 
-CatX is a friendly Windows 11 keyboard guard for anyone whose cat believes the keyboard is the best seat in the house. It temporarily ignores ordinary keyboard input while keeping the mouse available and showing an animated desktop cat.
+CatX keeps accidental paw presses out of your work while your chosen cats walk, groom, greet one another, and settle down for a nap. One playful mouse has its own mission: get the cheese home.
 
-CatX is created by **Dan Roberts - DigitalRCS**. It runs locally, requires no account, makes no network requests, and collects no data.
+[Download CatX](https://github.com/digitalrcs/CatX/releases/latest) · [Quick start](Quick-Start) · [Recovery help](Safety-and-Recovery) · [Printable guide](https://github.com/digitalrcs/CatX/blob/main/output/pdf/CatX-User-Guide-v1.2.0.pdf)
 
-## Start here
+![CatX main window](https://raw.githubusercontent.com/digitalrcs/CatX/main/docs/images/main-window.png)
 
-- [Install CatX](Installation)
-- [Use CatX](User-Guide)
-- [Safety and recovery](Safety-and-Recovery)
-- [Privacy](Privacy)
-- [Frequently asked questions](FAQ)
-- [Build from source](Building-from-Source)
+## Make yourself at home
 
-## Quick links
+| I want to… | Start here |
+| --- | --- |
+| Install CatX or use the portable build | [Installation](Installation) |
+| Get protection running in a few minutes | [Quick start](Quick-Start) |
+| Understand the controls and tray icon | [User guide](User-Guide) |
+| Pick several cats and learn their habits | [Cats and behaviors](Cats-and-Behaviors) |
+| Watch the mouse collect cheese | [Mouse and cheese](Mouse-and-Cheese) |
+| Restore typing or solve a problem | [Safety and recovery](Safety-and-Recovery) · [Troubleshooting](Troubleshooting) |
+| Learn what stays on my computer | [Privacy](Privacy) |
+| Build or contribute to CatX | [Building from source](Building-from-Source) |
 
-- [Latest release](https://github.com/digitalrcs/CatX/releases/latest)
-- [Printable PDF user guide](https://github.com/digitalrcs/CatX/raw/main/output/pdf/CatX-User-Guide-v1.0.3.pdf)
-- [Report a bug](https://github.com/digitalrcs/CatX/issues/new?template=bug_report.yml)
-- [Request a feature](https://github.com/digitalrcs/CatX/issues/new?template=feature_request.yml)
-- [Source code](https://github.com/digitalrcs/CatX)
+## Meet your companions
+
+Choose from **12 cat styles**, with **up to eight cats together**. Mix illustrated and realistic cats using the simple multi-select dropdown.
+
+![The twelve CatX cat styles](https://raw.githubusercontent.com/digitalrcs/CatX/main/docs/images/cat-styles.png)
+
+**Local · Private · Offline** — Windows 11 x64. No account, no telemetry, and no runtime Blender installation.
+
+> Test your selected recovery shortcut immediately after enabling the guard. The mouse remains usable; **Disable guard with mouse** restores typing.
+
+This wiki describes **CatX 1.2.0**. See the [changelog](https://github.com/digitalrcs/CatX/blob/main/CHANGELOG.md) for version history.
+
+Created by **Dan Roberts · DigitalRCS**.

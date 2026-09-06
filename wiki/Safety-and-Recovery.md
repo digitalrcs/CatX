@@ -1,21 +1,35 @@
-# Safety and recovery
+# Restore typing and stay in control
 
-Always test the selected recovery shortcut immediately after enabling CatX.
+CatX temporarily suppresses ordinary keyboard input. It keeps the mouse available and provides several ways to restore typing.
 
-## Recovery options
+## Choose and test a shortcut
 
-1. Hold the complete recovery shortcut shown in CatX.
-2. Use the mouse to select **Disable guard with mouse**.
-3. If CatX is minimized, right-click its cat icon in the Windows notification area and choose **Disable keyboard guard**.
-4. Close CatX; Windows removes the process-owned keyboard hook.
-5. Press `Ctrl + Alt + Delete` to use the Windows secure screen if necessary.
+Select one combination before enabling the guard:
 
-## Safety boundaries
+| Shortcut | Practical note |
+| --- | --- |
+| **Ctrl + Alt + K** | Convenient on most keyboards. |
+| **Ctrl + Shift + F12** | Some laptop keyboards also require Fn for F12. |
+| **Alt + Shift + Pause** | Requires a keyboard with an accessible Pause key. |
 
-- CatX never blocks the mouse.
-- CatX cannot block the Windows secure-attention sequence.
-- CatX does not install a driver or Windows service.
-- CatX does not keep the keyboard guarded after the process exits.
-- CatX requires no administrator privileges.
+Hold the modifier keys, then press the final key. Test your choice immediately after enabling the guard, especially after changing it.
 
-Report a security-sensitive recovery failure privately through [GitHub Security Advisories](https://github.com/digitalrcs/CatX/security/advisories/new), not as a public issue.
+## If you cannot type
+
+1. Use the exact shortcut displayed in CatX.
+2. Click **Disable guard with mouse**.
+3. If CatX is minimized, right-click its notification-area icon and select **Disable keyboard guard**.
+4. Close CatX with the mouse to remove its hook.
+5. If the interface is unavailable, press **Ctrl + Alt + Delete**, open Task Manager, and end `CatX.exe`.
+
+Windows handles **Ctrl + Alt + Delete** outside ordinary applications; CatX cannot suppress that secure screen.
+
+## What protection covers
+
+CatX protects the current interactive desktop session from accidental keyboard input. It is not a Windows account lock or a substitute for locking your computer when leaving it unattended.
+
+The hook exists only while the CatX process owns it. CatX does not run as a service or keep a lock after it exits. It never blocks the mouse.
+
+If automatic protection returns after unlocking, set **Auto-lock after no activity** to **Off**.
+
+**Next:** [Troubleshooting](Troubleshooting)

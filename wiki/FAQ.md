@@ -1,25 +1,37 @@
 # Frequently asked questions
 
-## Does CatX block the mouse?
+### Can several cats appear together?
+Yes. Ctrl-click up to eight names in **Choose your cats** before enabling the guard. You can mix illustrated and realistic cats.
 
-No. The mouse remains available so the guard can always be disabled from the window or tray menu.
+### Does every cat get its own mouse?
+No. The cats share one mouse, which finds cheese, carries it home, and tries to evade them.
 
-## Does CatX record what I type?
+### Can cats sleep anywhere?
+They can choose nap spots throughout the starting monitor's working area. Each reserves a separate position, so cats can rest beside each other.
 
-No. CatX suppresses ordinary keyboard events only while guarding and does not translate, log, store, or transmit typed content.
+### Can I protect the keyboard without cats?
+Yes. Use **No cats / clear selection**, then enable the guard.
 
-## Why did CatX disappear when I minimized it?
+### Is there a Preview cats button?
+No. Cats use natural behavior when the guard is enabled. Developers can use the keyboard-safe review mode described in [Building from source](Building-from-Source).
 
-CatX moves to the Windows notification area. Select the hidden-icons arrow if necessary and look for the cat icon. Double-click it to reopen CatX or right-click it for the menu.
+### Can I still use the mouse?
+Yes. CatX never blocks the mouse, and its animated overlays are click-through.
 
-## Does auto-lock activate while I am using the computer?
+### Does it work on every monitor at once?
+The cats stay on the monitor where the cursor was when the guard started. Disable the guard and restart it with the cursor on another monitor to move the scene.
 
-No. Keyboard or mouse activity resets the timer. Auto-lock activates only after the full selected period with no input.
+### Do I need .NET or Blender?
+Release builds include the .NET runtime. Blender is only needed to rebuild realistic animation assets.
 
-## Does CatX need administrator privileges or .NET?
+### Does CatX send my keystrokes anywhere?
+No. CatX makes no network requests and does not record typed content. See [Privacy](Privacy).
 
-The installer runs per user without administrator privileges. Official Windows packages are self-contained, so a separate .NET installation is not required.
+### Does minimizing stop protection?
+No. CatX remains in the notification area. Use its tray menu to reopen it, disable protection, or exit.
 
-## Why does SmartScreen show a warning?
+### Does CatX start with Windows?
+CatX does not automatically start with Windows.
 
-CatX is currently unsigned. Download only from the official GitHub release and verify the checksum in `SHA256SUMS.txt`.
+### Is CatX a security lock?
+It is an accidental-input guard. Use Windows' own lock screen to secure your account.

@@ -1,25 +1,45 @@
-# Installation
+# Install, update, or remove CatX
 
-## System requirements
+## Requirements
 
-- 64-bit Windows 11.
-- No separate .NET installation is required.
-- No administrator account is required.
+- A **64-bit Windows 11** PC.
+- No administrator privileges or separate .NET runtime installation are required for the release builds.
+- Blender is not required to display the realistic cats.
 
-## Recommended installation
+## Choose a download
 
-1. Open the [latest CatX release](https://github.com/digitalrcs/CatX/releases/latest).
-2. Download `CatX-Windows11-<version>.zip`.
-3. Extract every file from the ZIP.
-4. Double-click `Setup.exe`.
-5. Review the license and installation location.
-6. Optionally create a desktop shortcut.
-7. Choose **Install**, then **Launch CatX**.
+Get files from the [official releases page](https://github.com/digitalrcs/CatX/releases/latest).
 
-## Windows SmartScreen
+| Download | Use it for |
+| --- | --- |
+| `CatX-Windows11-<version>.zip` | The normal installation package. Extract everything and run `Setup.exe`. |
+| `CatX-Setup-<version>.exe` | The standalone installer. |
+| `CatX-win-x64.zip` | Portable use. Extract everything to a folder and run `CatX.exe`. |
+| `SHA256SUMS.txt` | Checking downloaded file hashes. |
+| Versioned PDF user guide | An offline, printable reference. |
 
-CatX is currently unsigned, so Windows SmartScreen may show **Windows protected your PC**. Verify that the download came from the official DigitalRCS CatX release and compare its SHA-256 value with `SHA256SUMS.txt` before choosing **More info** and **Run anyway**. Never bypass a warning for a file from an unknown source.
+Follow the installer prompts, optionally create a desktop shortcut, and launch CatX. The installer targets the current Windows user.
+
+CatX release executables are currently unsigned. If SmartScreen appears, verify that the file came from the official release before using **More info → Run anyway**.
+
+## Update
+
+Exit CatX from its tray menu before running the newer installer. For portable use, extract the new release into its own folder and launch that copy after exiting the old one. Preferences are stored separately from the executable.
+
+## Optional download verification
+
+Run PowerShell in your download folder:
+
+```powershell
+Get-FileHash .\CatX-Setup-1.2.0.exe -Algorithm SHA256
+```
+
+Compare the result with the matching filename in the release's `SHA256SUMS.txt`. Adjust the filename for the version you downloaded.
 
 ## Uninstall
 
-Open Windows **Settings**, select **Apps**, then **Installed apps**. Find **CatX Keyboard Guard** and choose **Uninstall**.
+Open **Windows Settings → Apps → Installed apps → CatX Keyboard Guard → Uninstall**.
+
+For a portable copy, exit CatX and remove its extracted folder. Preferences may remain in `%LOCALAPPDATA%\CatX\settings.json`; remove that file while CatX is closed if you also want to reset your settings.
+
+**Next:** [Quick start](Quick-Start)
