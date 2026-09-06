@@ -22,11 +22,11 @@ jobs:
         run: .\installer\Build-Installer.ps1
       - name: Create portable ZIP
         shell: pwsh
-        run: Compress-Archive -Path publish/CatX/CatX.exe,output/pdf/CatX-User-Guide-v1.0.3.pdf,docs/ANIMATED_CATS.md,docs/ANIMATION_REVIEW.md,docs/USER_GUIDE.md,tools/Start-Animation-Review.cmd,LICENSE -DestinationPath CatX-win-x64.zip
+        run: Compress-Archive -Path publish/CatX/CatX.exe,output/pdf/CatX-User-Guide-v1.2.0.pdf,docs/ANIMATED_CATS.md,docs/ANIMATION_REVIEW.md,docs/USER_GUIDE.md,tools/Start-Animation-Review.cmd,LICENSE -DestinationPath CatX-win-x64.zip
       - name: Create checksums
         shell: pwsh
         run: |
-          Get-FileHash dist/CatX-Setup-*.exe,dist/CatX-Windows11-*.zip,CatX-win-x64.zip,output/pdf/CatX-User-Guide-v1.0.3.pdf -Algorithm SHA256 |
+          Get-FileHash dist/CatX-Setup-*.exe,dist/CatX-Windows11-*.zip,CatX-win-x64.zip,output/pdf/CatX-User-Guide-v1.2.0.pdf -Algorithm SHA256 |
             ForEach-Object { "$($_.Hash)  $([System.IO.Path]::GetFileName($_.Path))" } |
             Set-Content SHA256SUMS.txt
       - name: Create GitHub release
@@ -36,6 +36,6 @@ jobs:
             CatX-win-x64.zip
             dist/CatX-Setup-*.exe
             dist/CatX-Windows11-*.zip
-            output/pdf/CatX-User-Guide-v1.0.3.pdf
+            output/pdf/CatX-User-Guide-v1.2.0.pdf
             SHA256SUMS.txt
-          body_path: docs/RELEASE_NOTES_1.1.1.md
+          body_path: docs/RELEASE_NOTES_1.2.0.md

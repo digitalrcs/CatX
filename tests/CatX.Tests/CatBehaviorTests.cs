@@ -7,6 +7,50 @@ namespace CatX.Tests;
 public sealed class CatBehaviorTests
 {
     [TestMethod]
+    public void CompanionsApproachGreetAndResumeWithoutLeavingScreen()
+    {
+        var area = new Rect(-1280, 0, 1280, 800);
+        var cats = Enumerable.Range(0, 3).Select(i => new CatBehavior(area, 42 + i, i, 3)
+            { ChaseCursor = false, PlayfulMouse = false }).ToArray();
+        var approached = false;
+        var greeted = false;
+        var resumed = false;
+        for (var frame = 0; frame < 3600; frame++)
+        foreach (var cat in cats)
+        {
+            var before = cat.Position;
+            cat.Step(1d / 60, area, new Point(), cats);
+            approached |= cat.Mood == CatMood.SocialApproach;
+            greeted |= cat.Greeting;
+            resumed |= greeted && cat.Mood == CatMood.Walking;
+            Assert.IsTrue(area.Contains(new Rect(cat.Position, new Size(CatBehavior.Width, CatBehavior.Height))));
+            Assert.IsLessThanOrEqualTo(120d / 60 + .001, (cat.Position - before).Length);
+        }
+        Assert.IsTrue(approached);
+        Assert.IsTrue(greeted);
+        Assert.IsTrue(resumed);
+    }
+
+    [TestMethod]
+    public void SleepingOrRemovedCompanionIsLeftAlone()
+    {
+        var area = new Rect(0, 0, 1280, 800);
+        var cat = new CatBehavior(area, 42) { PlayfulMouse = false, ChaseCursor = false };
+        var friend = new CatBehavior(area, 43, 1, 2) { PlayfulMouse = false };
+        for (var i = 0; i < 1800 && cat.Mood != CatMood.SocialApproach; i++)
+            cat.Step(1d / 60, area, new Point(), [friend]);
+        Assert.AreEqual(CatMood.SocialApproach, cat.Mood);
+        cat.Step(1d / 60, area, new Point(), []);
+        Assert.AreNotEqual(CatMood.SocialApproach, cat.Mood);
+        friend.PreviewPose(CatMood.Sleeping, 0);
+        for (var i = 0; i < 1800; i++)
+        {
+            cat.Step(1d / 60, area, new Point(), [friend]);
+            Assert.AreNotEqual(CatMood.SocialApproach, cat.Mood);
+        }
+    }
+
+    [TestMethod]
     public void OrdinaryCursorTravelAndStationaryCursorDoNotExciteCat()
     {
         var detector = new CursorExcitement();
@@ -27,19 +71,21 @@ public sealed class CatBehaviorTests
     }
 
     [TestMethod]
-    public void AllBehaviorsStayOnMonitorAndToyEscapesBeforeContact()
+    public void AllBehaviorsStayOnMonitorDuringSharedMouseVisits()
     {
         var area = new Rect(-1920, -120, 1920, 1080);
         var cat = new CatBehavior(area, 1234);
+        var mouse = new ToyMouseBehavior(1234);
         var observed = new HashSet<CatMood>();
         for (var i = 0; i < 600 * 60; i++)
         {
             var before = cat.Position;
-            cat.Step(1d / 60, area, new Point(-900, 300));
+            mouse.Step(1d / 60, area, [cat], cat.PlayfulMouse);
+            cat.Step(1d / 60, area, new Point(-900, 300), mouse: mouse);
             observed.Add(cat.Mood);
             Assert.IsTrue(area.Contains(new Rect(cat.Position, new Size(CatBehavior.Width, CatBehavior.Height))));
             Assert.IsLessThanOrEqualTo(285d / 60 + .001, (cat.Position - before).Length, "No teleporting during ordinary animation.");
-            if (cat.MouseVisible) Assert.IsGreaterThan(CatBehavior.MouseEscapeDistance - .01, (cat.MousePosition - cat.Center).Length, "Toy must escape before physical contact.");
+
             if (Math.Abs(cat.Position.X - before.X) > .04) Assert.AreEqual(cat.Position.X > before.X ? -1d : 1d, cat.Facing);
         }
         foreach (var mood in new[] { CatMood.Walking, CatMood.Sitting, CatMood.Grooming, CatMood.LyingDown, CatMood.Sleeping, CatMood.Waking, CatMood.MouseChase })
@@ -51,17 +97,20 @@ public sealed class CatBehaviorTests
     {
         var area = new Rect(0, 0, 1280, 800);
         var cat = new CatBehavior(area, 1234);
+        var mouse = new ToyMouseBehavior(1234);
         var slept = false;
         var sawToy = false;
         for (var i = 0; i < 36000; i++)
         {
-            cat.Step(1d / 60, area, new Point(600, 300));
-            if (cat.MouseVisible && !sawToy)
+            mouse.Step(1d / 60, area, [cat], cat.PlayfulMouse);
+            cat.Step(1d / 60, area, new Point(600, 300), mouse: mouse);
+            if (mouse.Visible && !sawToy)
             {
                 sawToy = true;
                 cat.PlayfulMouse = false;
-                cat.Step(1d / 60, area, new Point(600, 300));
-                Assert.IsFalse(cat.MouseVisible);
+                mouse.Step(1d / 60, area, [cat], cat.PlayfulMouse);
+            cat.Step(1d / 60, area, new Point(600, 300), mouse: mouse);
+                Assert.IsFalse(mouse.Visible);
             }
             if (cat.Mood == CatMood.Sleeping) { slept = true; break; }
         }
@@ -89,17 +138,19 @@ public sealed class CatBehaviorTests
         for (var seed = 0; seed < 20; seed++)
         {
             var cat = new CatBehavior(area, seed) { RoamSeconds = 60 };
+            var mouse = new ToyMouseBehavior(seed);
             var sleepStarted = -1d;
             var sleptFor = 0d;
             for (var i = 0; i < 120 * 60; i++)
             {
-                cat.Step(1d / 60, area, new Point(900, 300));
+                mouse.Step(1d / 60, area, [cat], true);
+                cat.Step(1d / 60, area, new Point(900, 300), mouse: mouse);
                 if (cat.Mood == CatMood.Sleeping)
                 {
                     if (sleepStarted < 0) sleepStarted = i / 60d;
                     sleptFor += 1d / 60;
-                    Assert.IsFalse(cat.MouseVisible, "Toys must not interrupt a nap.");
-                    Assert.AreEqual(area.Bottom - CatBehavior.Height - 8, cat.Position.Y, 3);
+                    Assert.AreEqual(0d, cat.Speed, "The shared mouse must not interrupt a nap.");
+                    Assert.IsLessThanOrEqualTo(3d, (cat.NapSpot!.Value - cat.Position).Length);
                 }
                 else if (sleepStarted >= 0) break;
             }
@@ -108,66 +159,4 @@ public sealed class CatBehaviorTests
         }
     }
 
-    [TestMethod]
-    public void ToyMakesSlowContinuousRoundTripThroughSameHole()
-    {
-        foreach (var seed in new[] { 7, 42, 1234 })
-        {
-            var area = new Rect(-1920, -120, 1920, 1080);
-            var cat = new CatBehavior(area, seed);
-            Point? previous = null;
-            var hole = new Point();
-            var farthest = -40d;
-            var visits = 0;
-            for (var i = 0; i < 300 * 60; i++)
-            {
-                cat.Step(1d / 60, area, new Point(-900, 300));
-                if (cat.MouseVisible)
-                {
-                    if (previous is Point last)
-                    {
-                        Assert.AreEqual(hole, cat.MouseHolePosition);
-                        Assert.IsLessThanOrEqualTo(CatBehavior.MouseSpeed / 60 + .001, (cat.MousePosition - last).Length);
-                    }
-                    else
-                    {
-                        hole = cat.MouseHolePosition;
-                        farthest = -40;
-                        Assert.IsLessThanOrEqualTo(-39d, (cat.MousePosition.X - hole.X) * cat.MouseOutwardDirection);
-                    }
-                    farthest = Math.Max(farthest, (cat.MousePosition.X - hole.X) * cat.MouseOutwardDirection);
-                    previous = cat.MousePosition;
-                }
-                else if (previous is Point last)
-                {
-                    Assert.IsGreaterThanOrEqualTo(99d, farthest, "Mouse should emerge fully before returning.");
-                    Assert.AreEqual(-40, (last.X - hole.X) * cat.MouseOutwardDirection, .01, "Mouse must enter its hole before disappearing.");
-                    previous = null;
-                    visits++;
-                }
-            }
-            Assert.IsGreaterThanOrEqualTo(2, visits);
-        }
-    }
-
-    [TestMethod]
-    public void MouseHolesVaryAcrossDesktopAndExcursionsExtendBeyondOldLimit()
-    {
-        var area = new Rect(0, 0, 1920, 1080);
-        var cat = new CatBehavior(area, 42);
-        var holes = new HashSet<Point>();
-        var longest = 0d;
-        for (var i = 0; i < 600*60; i++)
-        {
-            cat.Step(1d/60, area, new Point(900, 300));
-            if (!cat.MouseVisible) continue;
-            holes.Add(cat.MouseHolePosition);
-            longest = Math.Max(longest, cat.MouseTravel);
-            Assert.IsTrue(area.Contains(cat.MouseHolePosition));
-            Assert.IsGreaterThan(CatBehavior.MouseEscapeDistance, (cat.MousePosition-cat.Center).Length);
-        }
-        Assert.IsGreaterThanOrEqualTo(3, holes.Count);
-        Assert.IsGreaterThan(400d, longest);
-        Assert.IsGreaterThan(200d, holes.Max(p => p.Y)-holes.Min(p => p.Y));
-    }
 }

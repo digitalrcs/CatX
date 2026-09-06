@@ -1,6 +1,6 @@
 # CatX Keyboard Guard - User Guide
 
-**Version 1.1.1**
+**Version 1.2.0**
 **Dan Roberts - DigitalRCS**
 
 CatX is a friendly Windows 11 keyboard guard for moments when a cat decides the keyboard is the best seat in the house. It temporarily ignores ordinary keyboard input while keeping the mouse available and showing an animated desktop cat.
@@ -25,13 +25,15 @@ CatX installs for the current Windows user and does not require administrator pr
 - **Marmalade, Midnight, Snowball, Tuxedo, or Calico** - original animated vector cats.
 - **Realistic Tabby, Orange, White, Grey, Tuxedo, Black, or Bicolor** - textured animations rendered from the Blender cat rig. No Blender installation is needed.
 
-Use **Preview cat** to try a companion without blocking the keyboard. Preview pauses automatic locking; **Stop preview** restarts the inactivity timer from zero. The style and timing controls are disabled during preview; stop preview to choose another cat.
+Open **Choose your cats** and Ctrl-click up to eight names. Selected names are highlighted; there are no checkboxes inside the list. Click the arrow again, click outside, or press Escape to close it. Use **No cats / clear selection** for keyboard-only protection. Choose cats before enabling the guard.
 
-Choose **Cats on screen** (1–8), then select a style for each additional cat. Original and realistic styles can be mixed. **No cat** hides all companions. More realistic cats use more memory; reduce the count if needed. **Preview cats** leaves the keyboard available. Use **Preview action** to immediately inspect Sleep, Groom, Walk, Run, or a Mouse visit; Natural resumes independent behavior. Pose choices affect preview only, never the keyboard guard.
+Cats roam, greet companions, groom, and nap anywhere on the starting monitor. Each reserves a separate sleeping spot, so they can rest beside each other. Naps last 30-45 seconds; rapid back-and-forth cursor movement can wake a cat for play.
 
-Cats alternate between roaming, sitting, grooming, and sleeping in a bottom corner of the monitor where they started. Expect the first nap around the first minute (additional cats have staggered bedtimes); naps last 30–45 seconds unless you deliberately wake the cat. Sleeping heads remain still while the tail tip twitches. Realistic cats use the supplied model's paw-washing motion; original animated cats also wipe their ears. Rapid back-and-forth cursor movement makes cats excited and triggers a short chase. **Chase playful cursor** and **Toy mouse visits** can be toggled independently even while cats are active. The toy mouse slowly emerges from a randomly placed cartoon mouse hole, ventures farther out, pauses, and returns through that same hole. Toy visits do not interrupt bedtime. No animation intercepts clicks.
+One shared mouse finds visible cheese, carries it toward its hole, and tries to evade cats. Cats can run and catch it; some mouse trips succeed and display **+1 cheese**. A catch produces a brief playful celebration. **Chase playful cursor** and **Toy mouse visits** can be changed independently while cats are active. The hole stays stationary during a trip. No animation intercepts clicks.
 
-See [Animated cats](ANIMATED_CATS.md) for the full behavior guide and rendering details. The bundled v1.0.3 PDF covers the existing keyboard-guard controls; this guide and the animation addendum describe the new 1.1.0 features.
+There is no Preview cats button or preview-action selector. Enabling the guard shows the selected cats using natural behavior. For a developer review with the keyboard guard disabled, launch `CatX.exe --review`; close the app to end the review.
+
+See [Animated cats](ANIMATED_CATS.md) for more detail. The included v1.2.0 PDF covers the current controls and behaviors.
 
 ### Unlock combination
 
@@ -81,7 +83,7 @@ If typing does not return:
 ### The desktop cat is missing
 
 - Confirm **Desktop cat** is not set to **No cat**.
-- Look across all connected monitors; CatX uses the full Windows virtual desktop.
+- Look on the monitor where your cursor was when the guard started; cats stay within that monitor's working area.
 - Disable and re-enable the guard after changing the cat selection.
 
 ### The recovery shortcut does not respond

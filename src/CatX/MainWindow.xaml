@@ -48,30 +48,26 @@
             <StackPanel Margin="28,26,28,22">
                 <TextBlock Text="Set up your guard" FontSize="25" FontWeight="Bold"/>
                 <TextBlock Text="Choose a companion and a private recovery shortcut." Foreground="#657277" FontSize="13" Margin="0,4,0,18"/>
-                <TextBlock Text="DESKTOP CAT" Foreground="#7A8589" FontWeight="Bold" FontSize="11"/>
-                <ComboBox x:Name="CatStyleCombo" Margin="0,5,0,12" SelectionChanged="PreferenceChanged">
-                    <ComboBoxItem Content="No cat"/><ComboBoxItem Content="Marmalade"/><ComboBoxItem Content="Midnight"/><ComboBoxItem Content="Snowball"/><ComboBoxItem Content="Tuxedo"/><ComboBoxItem Content="Calico"/>
-                    <ComboBoxItem Content="Realistic Tabby"/><ComboBoxItem Content="Realistic Orange"/><ComboBoxItem Content="Realistic White"/><ComboBoxItem Content="Realistic Grey"/><ComboBoxItem Content="Realistic Tuxedo"/><ComboBoxItem Content="Realistic Black"/><ComboBoxItem Content="Realistic Bicolor"/>
-                </ComboBox>
-                <DockPanel Margin="0,0,0,8">
-                    <TextBlock Text="CATS ON SCREEN" FontSize="11" FontWeight="Bold" VerticalAlignment="Center" Margin="0,0,12,0"/>
-                    <ComboBox x:Name="CatCountCombo" Width="72" HorizontalAlignment="Left" SelectionChanged="CatCountChanged">
-                        <ComboBoxItem Content="1"/><ComboBoxItem Content="2"/><ComboBoxItem Content="3"/><ComboBoxItem Content="4"/>
-                        <ComboBoxItem Content="5"/><ComboBoxItem Content="6"/><ComboBoxItem Content="7"/><ComboBoxItem Content="8"/>
-                    </ComboBox>
-                </DockPanel>
-                <StackPanel x:Name="AdditionalCatsPanel" Margin="0,0,0,8"/>
+                <TextBlock Text="CHOOSE YOUR CATS" FontWeight="Bold" FontSize="11"/>
+                <Button x:Name="CatPickerButton" Click="CatPickerButton_Click" Margin="0,6,0,6" Padding="9,7" FontWeight="Normal" BorderThickness="1" BorderBrush="#ADB5B8" Background="#F3F3F3" HorizontalContentAlignment="Stretch" AutomationProperties.Name="Choose desktop cats">
+                    <DockPanel><TextBlock DockPanel.Dock="Right" Text="&#x25BE;" Margin="8,0,0,0"/><TextBlock x:Name="CatSelectionSummary" TextTrimming="CharacterEllipsis" ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}"/></DockPanel>
+                </Button>
+                <Popup Opened="CatPickerOpened" x:Name="CatPickerPopup" PlacementTarget="{Binding ElementName=CatPickerButton}" Placement="Bottom" StaysOpen="True">
+                    <Border Background="White" BorderBrush="#ADB5B8" BorderThickness="1" Width="{Binding ActualWidth, ElementName=CatPickerButton}" Padding="4">
+                        <StackPanel>
+                            <TextBlock Text="Select up to 8 cats" Foreground="#657277" Margin="8,4"/>
+                            <ListBox x:Name="CatPicker" SelectionMode="Extended" SelectionChanged="CatPickerChanged" MaxHeight="300" BorderThickness="0" PreviewKeyDown="CatPickerKeyDown" AutomationProperties.Name="Cat names">
+                                <ListBox.ItemContainerStyle><Style TargetType="ListBoxItem"><Setter Property="HorizontalContentAlignment" Value="Stretch"/><Setter Property="Padding" Value="8,6"/></Style></ListBox.ItemContainerStyle>
+                            </ListBox>
+                            <Button Content="No cats / clear selection" Click="ClearCats_Click" Padding="8,5" Margin="0,4,0,0"/>
+                        </StackPanel>
+                    </Border>
+                </Popup>
+                <TextBlock x:Name="CatSelectionHint" Text="Ctrl-click names to select multiple cats." Foreground="#657277" FontSize="12" TextWrapping="Wrap" Margin="0,0,0,10"/>
                 <WrapPanel Margin="0,0,0,10">
                     <CheckBox x:Name="ChaseCursorCheck" Content="Chase playful cursor" Margin="0,0,16,4" Checked="BehaviorPreferenceChanged" Unchecked="BehaviorPreferenceChanged" ToolTip="Quick mouse direction changes excite the cat. Cursor positions stay in memory only."/>
                     <CheckBox x:Name="PlayfulMouseCheck" Content="Toy mouse visits" Margin="0,0,0,4" Checked="BehaviorPreferenceChanged" Unchecked="BehaviorPreferenceChanged"/>
                 </WrapPanel>
-                <Button x:Name="PreviewButton" Content="Preview cats" Click="PreviewButton_Click" Margin="0,0,0,12" Padding="8,5" ToolTip="Play with your cats while the keyboard stays available."/>
-                <DockPanel Margin="0,0,0,12">
-                    <TextBlock Text="Preview action" VerticalAlignment="Center" Margin="0,0,12,0"/>
-                    <ComboBox x:Name="PreviewActionCombo" SelectedIndex="0" SelectionChanged="PreviewActionChanged" ToolTip="Review a pose in place without waiting for random behavior. Only affects Preview cats, never the guard.">
-                        <ComboBoxItem Content="Natural"/><ComboBoxItem Content="Sleep"/><ComboBoxItem Content="Groom"/><ComboBoxItem Content="Walk"/><ComboBoxItem Content="Run"/><ComboBoxItem Content="Mouse visit"/>
-                    </ComboBox>
-                </DockPanel>
                 <TextBlock Text="UNLOCK COMBINATION" Foreground="#7A8589" FontWeight="Bold" FontSize="11"/>
                 <ComboBox x:Name="UnlockCombo" Margin="0,5,0,12" SelectionChanged="PreferenceChanged">
                     <ComboBoxItem Content="Ctrl + Alt + K" Tag="CtrlAltK"/><ComboBoxItem Content="Ctrl + Shift + F12" Tag="CtrlShiftF12"/><ComboBoxItem Content="Alt + Shift + Pause" Tag="AltShiftPause"/>

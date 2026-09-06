@@ -56,7 +56,7 @@ foreach($style in $Styles) {
             # Exercise the real Rendering callback and mouse-window lifecycle, not just pose sampling.
             $settings.ChaseCursor=$false
             $window.ApplyPreferences($settings)
-            $behavior.GetType().GetField('_mouseIn',$flags).SetValue($behavior,[double]0.1)
+            $window.SetPreviewAction('Mouse visit')
             $window.GetType().GetField('_lastTime',$flags).SetValue($window,[double]0)
             $frame=[System.Windows.Threading.DispatcherFrame]::new()
             $timer=[System.Windows.Threading.DispatcherTimer]::new()
@@ -67,7 +67,7 @@ foreach($style in $Styles) {
             $timer.Stop()
             $mouse=$window.GetType().GetField('_mouse',$flags).GetValue($window)
             if(!$mouse.IsVisible -or $behavior.Speed -le 0) {
-                Write-Output "Live diagnostics: mood=$($behavior.Mood) time=$($behavior.MoodTime) speed=$($behavior.Speed) mouse=$($behavior.MouseVisible) area=$($window.GetType().GetField('_area',$flags).GetValue($window))"
+                Write-Output "Live diagnostics: mood=$($behavior.Mood) time=$($behavior.MoodTime) speed=$($behavior.Speed) mouse=$($window.GetType().GetField('_mouseBehavior',$flags).GetValue($window).Visible) area=$($window.GetType().GetField('_area',$flags).GetValue($window))"
                 throw "Live movement/toy rendering failed for $style"
             }
             Save-Visual $window "$style-LiveChase"
@@ -89,31 +89,24 @@ if($MainWindow) {
         $settings.CatCount=3
         $settings.AdditionalCatStyles=[System.Collections.Generic.List[string]]@('Calico','Midnight')
         $type.GetField('_loading',$flags).SetValue($main,$true)
-        $combo=$main.FindName('CatStyleCombo')
-        $combo.SelectedItem=@($combo.Items | Where-Object Content -EQ 'Realistic Tabby')[0]
-        $main.FindName('CatCountCombo').SelectedIndex=2
-        $null=$type.GetMethod('BuildAdditionalCatControls',$flags).Invoke($main,@())
+        $null=$type.GetMethod('LoadSettingsIntoControls',$flags).Invoke($main,@())
         $type.GetField('_loading',$flags).SetValue($main,$false)
         $main.Show()
         Save-Visual $main 'MainWindow'
-        $handler=$type.GetMethod('PreviewButton_Click',$flags)
-        $null=$handler.Invoke($main,@($null,[System.Windows.RoutedEventArgs]::new()))
+        $handler=$type.GetMethod('StartReview',$flags)
+        $null=$handler.Invoke($main,@())
         $guard=$type.GetField('_keyboardGuard',$flags).GetValue($main)
-        if ($guard.IsActive -or $timer.IsEnabled -or !$type.GetField('_previewing',$flags).GetValue($main)) { throw 'Preview safety check failed.' }
+        if ($guard.IsActive -or $timer.IsEnabled -or !$type.GetField('_reviewing',$flags).GetValue($main)) { throw 'Preview safety check failed.' }
         $previewCats=@($type.GetField('_overlays',$flags).GetValue($main))
         if($previewCats.Count -ne 3 -or @($previewCats | Where-Object IsVisible).Count -ne 3) { throw 'Multiple-cat preview did not show all three cats.' }
         $chosen=@($previewCats | ForEach-Object { $_.GetType().GetField('_settings',$flags).GetValue($_).CatStyle })
         if(($chosen -join ',') -ne 'Realistic Tabby,Calico,Midnight') { throw 'Multiple-cat styles did not match selections.' }
-        foreach($actionIndex in @(1,2,3,4)) {
-            $main.FindName('PreviewActionCombo').SelectedIndex=$actionIndex
-            $expected=@('','Sleeping','Grooming','Walking','CursorChase')[$actionIndex]
-            foreach($catWindow in $previewCats) {
-                if($catWindow.GetType().GetField('_previewMood',$flags).GetValue($catWindow).ToString() -ne $expected) { throw 'Preview action did not reach every cat.' }
-            }
-            if($guard.IsActive -or $timer.IsEnabled) { throw 'Pose review activated a keyboard guard or timer.' }
+        foreach($catWindow in $previewCats) {
+            if($null -ne $catWindow.GetType().GetField('_previewMood',$flags).GetValue($catWindow)) { throw 'Preview must use natural behavior.' }
         }
         Save-Visual $main 'MainWindow-Preview'
-        $null=$handler.Invoke($main,@($null,[System.Windows.RoutedEventArgs]::new()))
+        $null=$type.GetMethod('StopReview',$flags).Invoke($main,@())
+        $null=$type.GetMethod('ScheduleAutoLock',$flags).Invoke($main,@($false))
         if (!$timer.IsEnabled -or $guard.IsActive -or $type.GetField('_overlays',$flags).GetValue($main).Count -ne 0) { throw 'Preview cleanup / auto-lock restart failed.' }
         if(@($previewCats | Where-Object IsVisible).Count -ne 0) { throw 'A companion survived Stop preview.' }
         $timer.Stop()

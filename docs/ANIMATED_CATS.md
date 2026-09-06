@@ -1,10 +1,14 @@
-# Animated cats in CatX 1.1.1
+# Animated cats in CatX 1.2.0
 
 Select an original cat or one of seven Realistic coats, then use Preview cat or enable the keyboard guard. Preview leaves typing available and pauses auto-lock. Stop preview before changing the selected coat. Click Stop preview, disable the guard, or exit CatX to remove both the cat and any visiting mouse.
 
-Cats walk and look around, sit, wash their faces, and lie down to nap in the lower corners. The first bedtime is scheduled after about 40 seconds, plus time to walk to the nearest lower corner and lie down. Naps last 30–45 seconds; after waking, the next bedtime is scheduled in 60–90 seconds. Toy visits cannot interrupt bedtime. Shake the cursor rapidly back and forth to wake the cat and invite a short playful chase. Straight cursor movements are not a play signal.
+Cats walk and look around, sit, wash their faces, and nap anywhere in the working area. A cat prefers its current location and reserves a nearby alternative if another cat has claimed it. Reserved nap spots are at least 170 logical pixels apart, allowing neighbors without stacked sleepers. A tiny display waits for a free spot. First bedtime is around 40 seconds plus seven seconds per cat slot; naps last 30–45 seconds, with another bedtime 60–90 seconds after waking. Mouse trips do not interrupt naps. Rapid cursor reversals can wake cats for play.
 
-A gray toy mouse occasionally emerges from an arched cartoon mouse hole at a random working-area location, strolls farther out (typically 340–640 logical pixels on roomy displays) at 80 logical pixels per second, pauses to sniff, and returns into that same hole. The cat approaches at a slower stalking pace and stays clear of the return path. Playful cursor chasing takes priority over toy visits. Disabling toys, closing the cat, or changing the monitor geometry cancels the visit immediately.
+One shared mouse emerges from a stationary hole, seeks visible cheese, pauses briefly to collect it, and carries it back through the same doorway. Each trip varies its evasiveness. Cats run at up to 260 logical pixels per second; a nimble mouse can dodge at 330, while a slower mouse can be caught. A catch shows a brief non-graphic celebration and ends the trip. A successful return shows **+1 cheese**. Captures and deliveries reset for another trip. Disabling toys, closing the scene, or changing display geometry cancels the active trip and its cheese.
+
+`tools/Export-CheeseChaseReview.ps1` exports actual WPF renderings of seeking, carrying, capture, delivery, and separate naps. Regression tests check both chase outcomes, one winner per capture, continuous bounded motion, cheese delivery, reserved nap spacing, and tiny displays.
+
+The cat dropdown stays open while names are selected or deselected with Ctrl-click. Choose up to eight names, or use **No cats / clear selection**. Saved settings from previous versions still load. The mouse simulation is advanced once per frame by the first cat overlay; all overlays read the same state, and only the first overlay owns a toy window. Run `pwsh -NoProfile -STA -File tools/Test-MultiCatScene.ps1` after a Release build to verify dropdown behavior and the shared-window lifecycle without enabling the guard or changing saved preferences.
 
 The two checkboxes independently enable cursor play and toy mouse visits. Cursor positions are used briefly in memory and are never recorded or sent anywhere. All overlays are click-through and never move or click the actual pointer.
 
@@ -16,7 +20,7 @@ Source supplied by the application owner: `E:\Data\BlenderCats\Cat_full\full\Cat
 
 Actions: Walk_forward_IP, Run_forward_IP, Idle_1, Sit_idle_1, and Lie, plus CatX_Groom_PawWash and CatX_Sleep_TailTip. `tools/catx_animation_actions.py` freezes all head/body transforms for sleep and moves only tail_06 (20 fps). Realistic grooming uses the supplied Sit_wash action baked without custom limb offsets or ear-reaching IK targets (15 fps); the rejected ear-wiping motion has been removed. Original vector cats retain their approved paw/ear grooming. Lie contains a complete down-and-up sequence; runtime holds its resting midpoint for lying down and plays the first half backward over two seconds for waking. All seven coat textures share the same actions and framing. Exactly one complete pose is drawn at a time, without transparent frame blending or crossfades that duplicate legs. Screen movement is still smoothly interpolated; this is not live 3D rendering.
 
-Use **Cats on screen** for 1–8 independently styled companions. Use **Preview action** for immediate in-place Sleep/Groom/Walk/Run playback or a Mouse visit. See [Animation review](ANIMATION_REVIEW.md) for safe preview instructions.
+Use the cat dropdown for 1–8 companions and enable the guard to show their natural behavior. The developer `--review` launch option shows cats without installing the keyboard hook. See [Animation review](ANIMATION_REVIEW.md) for safe preview instructions.
 
 From the repository root, render with Blender installed:
 
@@ -31,3 +35,5 @@ Runtime loads just the selected coat from embedded resources and releases it whe
 ## Asset rights
 
 These realistic cats are derived from the owner-supplied third-party model. No asset license or author information was present alongside the supplied files. The CatX MIT license does not grant rights to these assets; consult the original model/texture license before reusing or redistributing the rendered output. Original vector cats and CatX source remain available as before.
+
+The shared toy window keeps fixed working-area bounds during each visit, so mouse movement does not shift the hole across fractional native-window coordinates. `tools/Test-MouseHoleStability.ps1` verifies fixed bounds and identical hole pixels at four render scaling levels.

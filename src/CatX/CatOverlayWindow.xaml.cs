@@ -24,6 +24,7 @@ public partial class CatOverlayWindow : Window
     private double _lastTime;
     private CatBehavior? _behavior;
     private ToyMouseWindow? _mouse;
+    private readonly ToyMouseBehavior _mouseBehavior;
     private RealisticCatFrames? _frames;
     private AppSettings _settings = new();
     private string _loadedStyle = "";
@@ -39,20 +40,30 @@ public partial class CatOverlayWindow : Window
     private readonly int _slot;
     private readonly int _count;
     private CatMood? _previewMood;
+    private IReadOnlyList<CatOverlayWindow> _companions = [];
+    internal void SetCompanions(IReadOnlyList<CatOverlayWindow> companions) => _companions = companions;
+
 
     public void SetPreviewAction(string action)
     {
         _previewMood = action switch { "Sleep" => CatMood.Sleeping, "Groom" => CatMood.Grooming,
             "Walk" => CatMood.Walking, "Run" => CatMood.CursorChase, _ => null };
         _behavior?.EndPosePreview();
-        if (action == "Mouse visit") _behavior?.RequestMousePreview();
+        if (_slot == 0)
+        {
+            _mouseBehavior.Reset();
+            if (action == "Mouse visit") _mouseBehavior.RequestVisit();
+        }
         _lastClip = "";
     }
 
     public CatOverlayWindow(AppSettings settings) : this(settings, 0, 1) { }
 
-    public CatOverlayWindow(AppSettings settings, int slot, int count)
+    public CatOverlayWindow(AppSettings settings, int slot, int count) : this(settings, slot, count, new ToyMouseBehavior()) { }
+
+    internal CatOverlayWindow(AppSettings settings, int slot, int count, ToyMouseBehavior mouse)
     {
+        _mouseBehavior = mouse;
         _slot = slot;
         _count = count;
         InitializeComponent();
@@ -67,7 +78,7 @@ public partial class CatOverlayWindow : Window
             UpdateBehaviorPreferences();
             Left = _behavior.Position.X;
             Top = _behavior.Position.Y;
-            _mouse = new ToyMouseWindow();
+            if (_slot == 0) _mouse = new ToyMouseWindow();
             _clock.Start();
             _animationTimer.Tick += RenderTick;
             _animationTimer.Start();
@@ -75,6 +86,7 @@ public partial class CatOverlayWindow : Window
         Closed += (_, _) =>
         {
             _closed = true;
+            _companions = [];
             _animationTimer.Stop();
             _animationTimer.Tick -= RenderTick;
             _clock.Stop();
@@ -153,17 +165,26 @@ public partial class CatOverlayWindow : Window
         }
         var pixel = System.Windows.Forms.Cursor.Position;
         var transform = PresentationSource.FromVisual(this)?.CompositionTarget?.TransformFromDevice ?? Matrix.Identity;
+        if (_slot == 0)
+        {
+            var cats = _companions.Count == 0 ? new[] { _behavior } : _companions
+                .Where(cat => !cat._closed && cat._area == _area).Select(cat => cat._behavior).OfType<CatBehavior>().ToArray();
+            _mouseBehavior.Step(dt, _area, cats, _settings.PlayfulMouse && _previewMood is null);
+        }
         if (_previewMood is CatMood preview) _behavior.PreviewPose(preview, dt);
-        else _behavior.Step(dt, _area, transform.Transform(new Point(pixel.X, pixel.Y)));
+        else _behavior.Step(dt, _area, transform.Transform(new Point(pixel.X, pixel.Y)),
+            _companions.Where(cat => cat != this && !cat._closed && cat._previewMood is null && cat._area == _area)
+                .Select(cat => cat._behavior).OfType<CatBehavior>().ToArray(), _mouseBehavior);
         Left = _behavior.Position.X;
         Top = _behavior.Position.Y;
         DirectionTransform.ScaleX = _behavior.Facing;
         RenderPose(dt);
         if (_mouse is not null)
         {
-            if (_behavior.MouseVisible)
+            if (_mouseBehavior.Visible)
             {
-                _mouse.UpdateScene(_behavior.MousePosition, _behavior.MouseHolePosition, _behavior.MouseOutwardDirection, _behavior.MouseTravel);
+                _mouse.UpdateScene(_mouseBehavior.Position, _mouseBehavior.Hole, _mouseBehavior.Outward, _mouseBehavior.AtDoor, _area);
+                _mouse.UpdateAdventure(_mouseBehavior);
                 if (!_mouse.IsVisible) _mouse.Show();
             }
             else if (_mouse.IsVisible) _mouse.Hide();
@@ -175,7 +196,7 @@ public partial class CatOverlayWindow : Window
         var cat = _behavior!;
         var excited = cat.Mood is CatMood.CursorChase or CatMood.MouseChase;
         var moving = cat.Speed > 8;
-        MoodIndicator.Text = cat.Mood == CatMood.Sleeping ? "z z" : excited ? "!" : "";
+        MoodIndicator.Text = cat.CaughtMouse ? "\u2605" : cat.Mood == CatMood.Sleeping ? "z z" : cat.Greeting ? "\u2665" : excited ? "!" : "";
         // Keep the status glyph readable when the complete artwork is mirrored.
         MoodIndicator.RenderTransform = new ScaleTransform(cat.Facing, 1, 10, 10);
         if (_frames is not null)

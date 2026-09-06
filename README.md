@@ -23,11 +23,11 @@ CatX is currently distributed as an unsigned community application. Windows Smar
 - Offers three user-selectable recovery shortcuts.
 - Includes five original vector cat styles: Marmalade, Midnight, Snowball, Tuxedo, and Calico.
 - Adds seven realistic cats rendered in Blender: Tabby, Orange, White, Grey, Tuxedo, Black, and Bicolor. Blender is not needed at runtime.
-- Choose 1–8 companions, each with its own original or realistic style.
-- All cats can walk, sit, groom, nap in bottom corners, and get excited by quick cursor direction changes.
-- An occasional toy mouse attracts the cat and escapes before contact. Both play behaviors can be switched off.
-- **Preview cat** runs the companion without enabling the keyboard guard and pauses automatic locking until preview ends.
-- Preview actions let you immediately review sleeping, grooming, walking, running, and mouse visits. Realistic cats use the supplied paw-wash motion; original cats also wipe their ears. The local `--review` mode disables the guard and leaves saved preferences unchanged.
+- Open **Choose your cats** and Ctrl-click up to eight cat names in the dropdown. It stays open for multiple choices; **No cats / clear selection** gives keyboard-only protection. Enable the keyboard guard to show the selected cats.
+- During natural play, awake cats occasionally approach companions and pause to greet them with a heart before resuming their own activities. Cursor play, toys, and naps take priority.
+- All cats can walk, sit, groom, nap anywhere with separate reserved spots, and get excited by quick cursor direction changes.
+- One shared mouse seeks a visible piece of cheese, picks it up, and carries it home. Cats can run after it and catch it; the mouse sometimes dodges them and delivers the cheese. A catch gets a playful celebration, and a successful delivery shows **+1 cheese**. Both play behaviors can be switched off.
+- The Preview cats button and preview-action selector have been removed. Cats use natural behavior automatically. The local `--review` mode disables the guard and leaves saved preferences unchanged.
 - Includes a **No cat** preference for keyboard-only protection.
 - Animates a click-through cat within the working area of the monitor where the cursor was when the cat started, including monitors with negative coordinates.
 - Lets you choose how often the cat changes location.
@@ -90,7 +90,7 @@ Bug reports and pull requests are welcome. Please read [CONTRIBUTING.md](CONTRIB
 Additional project information:
 
 - [User guide](docs/USER_GUIDE.md)
-- [Printable PDF user guide](output/pdf/CatX-User-Guide-v1.0.3.pdf)
+- [Printable PDF user guide](output/pdf/CatX-User-Guide-v1.2.0.pdf)
 - [GitHub wiki](https://github.com/digitalrcs/CatX/wiki)
 - [Windows packaging and signing](docs/PACKAGING.md)
 - [Architecture](docs/ARCHITECTURE.md)

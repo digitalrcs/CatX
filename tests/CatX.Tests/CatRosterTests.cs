@@ -9,6 +9,19 @@ namespace CatX.Tests;
 public sealed class CatRosterTests
 {
     [TestMethod]
+    public void QuickSelectionReplacesRosterAndCanClearIt()
+    {
+        var settings = new AppSettings { CatCount = 8 };
+        CatRoster.SelectStyles(settings, ["Calico", "Midnight", "Calico", "unknown"]);
+        var saved = JsonSerializer.Deserialize<AppSettings>(JsonSerializer.Serialize(settings))!;
+        CollectionAssert.AreEqual(new[] { "Calico", "Midnight" }, CatRoster.Resolve(saved).Select(cat => cat.CatStyle).ToArray());
+        CatRoster.SelectStyles(settings, []);
+        Assert.IsEmpty(CatRoster.Resolve(settings));
+        CatRoster.SelectStyles(settings, CatRoster.Styles);
+        Assert.HasCount(8, CatRoster.Resolve(settings));
+    }
+
+    [TestMethod]
     public void OldSettingsKeepOneCatAndNoCatStillDisablesAll()
     {
         var settings = JsonSerializer.Deserialize<AppSettings>("{\"CatStyle\":\"Calico\"}")!;

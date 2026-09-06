@@ -9,6 +9,14 @@ internal static class CatRoster
     public static readonly string[] Styles = ["Marmalade", "Midnight", "Snowball", "Tuxedo", "Calico",
         "Realistic Tabby", "Realistic Orange", "Realistic White", "Realistic Grey", "Realistic Tuxedo", "Realistic Black", "Realistic Bicolor"];
 
+    public static void SelectStyles(AppSettings settings, IEnumerable<string> styles)
+    {
+        var selected = styles.Where(Styles.Contains).Distinct().Take(MaximumCats).ToArray();
+        settings.CatStyle = selected.FirstOrDefault() ?? "No cat";
+        settings.CatCount = Math.Max(1, selected.Length);
+        settings.AdditionalCatStyles = selected.Skip(1).ToList();
+    }
+
     public static List<AppSettings> Resolve(AppSettings settings)
     {
         if (settings.CatStyle == "No cat") return [];

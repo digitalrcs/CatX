@@ -8,7 +8,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <AssemblyName>CatX</AssemblyName>
     <RootNamespace>CatX</RootNamespace>
-    <Version>1.1.1</Version>
+    <Version>1.2.0</Version>
     <Authors>Dan Roberts</Authors>
     <Company>Dan Roberts DigitalRCS</Company>
     <Product>CatX Keyboard Guard</Product>

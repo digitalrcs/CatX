@@ -20,7 +20,7 @@ from reportlab.platypus import (
 
 
 ROOT = Path(__file__).resolve().parents[1]
-OUTPUT = ROOT / "output" / "pdf" / "CatX-User-Guide-v1.0.3.pdf"
+OUTPUT = ROOT / "output" / "pdf" / "CatX-User-Guide-v1.2.0.pdf"
 LOGO = ROOT / "src" / "CatX" / "Assets" / "DigitalRCS_Logo.png"
 CAT_ICON = ROOT / "src" / "CatX" / "Assets" / "catx-app-icon.png"
 
@@ -212,7 +212,7 @@ def build_pdf():
             icon,
             Spacer(1, 0.18 * inch),
             Paragraph("CatX Keyboard Guard", title),
-            Paragraph("User Guide - Version 1.0.3", subtitle),
+            Paragraph("User Guide - Version 1.2.0", subtitle),
             Spacer(1, 0.22 * inch),
             callout(
                 "A friendly Windows 11 keyboard guard for the moments when your cat decides the keyboard is the best seat in the house.",
@@ -254,7 +254,7 @@ def build_pdf():
             Paragraph("Quick start", h2),
             numbered_list(
                 [
-                    "Choose a desktop cat or <b>No cat</b>.",
+                    "Open the cat dropdown and Ctrl-click up to eight names, or clear the selection.",
                     "Choose and remember a private recovery shortcut.",
                     "Select <b>Enable keyboard guard</b>.",
                     "Test the recovery shortcut immediately.",
@@ -278,7 +278,7 @@ def build_pdf():
 
     settings_data = [
         [Paragraph("Setting", table_header), Paragraph("What it controls", table_header)],
-        [Paragraph("Desktop cat", small), Paragraph("No cat; or one of five original animated vector cats: Marmalade, Midnight, Snowball, Tuxedo, and Calico.", small)],
+        [Paragraph("Desktop cat", small), Paragraph("Ctrl-click up to eight original or realistic cat names. Click the arrow again, click outside, or press Escape to close the list. Clear the selection for no cats.", small)],
         [Paragraph("Unlock combination", small), Paragraph("The private key combination that restores typing while the guard is active.", small)],
         [Paragraph("Cat moves every", small), Paragraph("How frequently the animated cat chooses a new desktop location. Disabled when No cat is selected.", small)],
         [Paragraph("Auto-lock after no activity", small), Paragraph("Optional inactivity period. Keyboard or mouse activity resets the timer; the guard enables only after the full period with no input.", small)],
@@ -303,6 +303,7 @@ def build_pdf():
         [
             Paragraph("Configure and use CatX", h1),
             settings_table,
+            Paragraph("Chase playful cursor and Toy mouse visits can be switched independently. The main window has no preview button or action selector.", small),
             Paragraph("Recovery shortcut choices", h2),
             bullet_list(
                 [
@@ -322,8 +323,8 @@ def build_pdf():
                     "Ordinary keyboard input is ignored.",
                     "The mouse remains available.",
                     "Minimizing CatX moves it to the Windows notification area. Right-click the cat icon to reopen CatX, disable an active keyboard guard, or exit.",
-                    "The selected cat moves across the combined Windows desktop and always faces its travel direction.",
-                    "The vector cats use smooth eased movement transitions.",
+                    "Cats use the starting monitor, greet companions, and nap anywhere in separate reserved spots.",
+                    "One mouse fetches cheese and tries to escape running cats. Cats can catch it, or it can deliver cheese to its hole.",
                     "Closing CatX removes its keyboard hook and restores normal input.",
                 ],
                 body,
@@ -370,7 +371,7 @@ def build_pdf():
             bullet_list(
                 [
                     "Confirm Desktop cat is not set to No cat.",
-                    "Look across all connected monitors; CatX uses the complete Windows virtual desktop.",
+                    "Look on the monitor where your cursor was when the guard started.",
                     "Disable and re-enable the guard after changing the cat selection.",
                 ],
                 body,

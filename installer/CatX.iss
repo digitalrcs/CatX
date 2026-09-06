@@ -1,6 +1,6 @@
 #define MyAppName "CatX Keyboard Guard"
 #ifndef MyAppVersion
-  #define MyAppVersion "1.1.1"
+  #define MyAppVersion "1.2.0"
 #endif
 #define MyAppPublisher "Dan Roberts DigitalRCS"
 #define MyAppExeName "CatX.exe"
@@ -46,7 +46,7 @@ Name: "desktopicon"; Description: "Create a &desktop shortcut"; GroupDescription
 
 [Files]
 Source: "..\publish\CatX\CatX.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\output\pdf\CatX-User-Guide-v1.0.3.pdf"; DestDir: "{app}\Documentation"; DestName: "CatX-User-Guide.pdf"; Flags: ignoreversion
+Source: "..\output\pdf\CatX-User-Guide-v1.2.0.pdf"; DestDir: "{app}\Documentation"; DestName: "CatX-User-Guide.pdf"; Flags: ignoreversion
 Source: "..\LICENSE"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\docs\ANIMATED_CATS.md"; DestDir: "{app}\Documentation"; Flags: ignoreversion
 Source: "..\docs\ANIMATION_REVIEW.md"; DestDir: "{app}\Documentation"; Flags: ignoreversion

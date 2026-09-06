@@ -15,11 +15,15 @@ try {
     $behavior=[Activator]::CreateInstance($field.GetValue($window).GetType(),@($area,[int]42,[int]0,[int]1))
     $field.SetValue($window,$behavior)
     $behavior.ChaseCursor=$false
-    $behavior.GetType().GetMethod('RequestMousePreview',$flags).Invoke($behavior,@()) | Out-Null
+    $toy=$window.GetType().GetField('_mouseBehavior',$flags).GetValue($window)
+    $toy.RequestVisit()
+    $cats=[Array]::CreateInstance($behavior.GetType(),1)
+    $cats[0]=$behavior
     $mouse=$window.GetType().GetField('_mouse',$flags).GetValue($window)
     $brush=[System.Windows.Media.BrushConverter]::new().ConvertFromString('#EEE9DF')
     for($i=0;$i -lt 420;$i++) {
-        $behavior.Step(.05,$area,[System.Windows.Point]::new(500,300))
+        $toy.Step(.05,$area,$cats,$true)
+        $behavior.Step(.05,$area,[System.Windows.Point]::new(500,300),$cats,$toy)
         $window.GetType().GetMethod('RenderPose',$flags).Invoke($window,@([double].05)) | Out-Null
         $window.FindName('DirectionTransform').ScaleX=$behavior.Facing
         $window.UpdateLayout()
@@ -27,8 +31,9 @@ try {
         $drawing.DrawRectangle($brush,$null,$area)
         $drawing.DrawRectangle([System.Windows.Media.VisualBrush]::new($window.Content),$null,
             [System.Windows.Rect]::new($behavior.Position.X,$behavior.Position.Y,256,224))
-        if($behavior.MouseVisible) {
-            $mouse.UpdateScene($behavior.MousePosition,$behavior.MouseHolePosition,$behavior.MouseOutwardDirection,$behavior.MouseTravel)
+        if($toy.Visible) {
+            $mouse.UpdateScene($toy.Position,$toy.Hole,$toy.Outward,$toy.AtDoor,$area)
+            $mouse.UpdateAdventure($toy)
             $mouse.Content.Measure([System.Windows.Size]::new($mouse.Width,$mouse.Height))
             $mouse.Content.Arrange([System.Windows.Rect]::new(0,0,$mouse.Width,$mouse.Height))
             $mouse.Content.UpdateLayout()

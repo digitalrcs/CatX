@@ -2,6 +2,20 @@
 
 All notable CatX changes are documented here. The project follows [Semantic Versioning](https://semver.org/).
 
+## [1.2.0] - 2026-09-06
+
+- Cats can nap anywhere, reserving separate spots while allowing nearby sleepers.
+- Added visible cheese fetching, carrying, and delivery by the shared mouse, with cat running/captures and variable mouse evasion.
+
+- Replaced automatic popup/toggle dismissal with explicit button, outside-click, Escape, and deactivation handling so arrow clicks close the cat list without reopening it.
+
+- Fixed mouse-hole jitter by keeping the transparent drawing window stationary while the mouse moves inside it.
+
+- Added a simple Ctrl-click dropdown for selecting up to eight cats, with selected names highlighted.
+- Removed the Preview cats button and preview-action selector. The cat dropdown shows plain names with highlighted selections and no checkboxes.
+- Replaced per-cat toy mice with one shared mouse that explores the desktop, turns, pauses, avoids nearby cats, and returns to its hole.
+- Added companion approaches and heart greetings during natural play, with saved-selection and behavior regression coverage.
+
 ## [1.1.1] - 2026-09-05
 
 - Added 1–8 independently styled cats and immediate animation-review controls in keyboard-safe preview mode.
@@ -77,3 +91,5 @@ All notable CatX changes are documented here. The project follows [Semantic Vers
 [1.0.3]: https://github.com/digitalrcs/CatX/releases/tag/v1.0.3
 [1.1.0]: https://github.com/digitalrcs/CatX/releases/tag/v1.1.0
 [1.1.1]: https://github.com/digitalrcs/CatX/releases/tag/v1.1.1
+
+[1.2.0]: https://github.com/digitalrcs/CatX/releases/tag/v1.2.0

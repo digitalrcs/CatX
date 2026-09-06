@@ -3,7 +3,7 @@ using Point = System.Windows.Point;
 
 namespace CatX.Services;
 
-internal enum CatMood { Idle, Walking, Sitting, Grooming, LyingDown, Sleeping, Waking, CursorChase, MouseChase }
+internal enum CatMood { Idle, Walking, Sitting, Grooming, LyingDown, Sleeping, Waking, CursorChase, MouseChase, SocialApproach }
 
 /// <summary>Time-based motion and play decisions shared by vector and Blender-rendered cats.</summary>
 internal sealed class CatBehavior
@@ -14,22 +14,19 @@ internal sealed class CatBehavior
     private Vector _velocity;
     private double _decisionIn = 1.5;
     private double _chaseFor;
-    private double _mouseIn;
-    private double _mouseFor;
-    private double _mouseElapsed;
-    private Rect _mouseArea;
     private double _napIn = 40;
     private bool _goingToBed;
     private bool _wakeForCursor;
+    private double _socialIn = 3;
+    private CatBehavior? _friend;
+    public bool Greeting => Mood == CatMood.Sitting && _friend is not null;
+
     public const double Width = 256, Height = 224;
-    public const double MouseEscapeDistance = 145;
-    public const double MouseSpeed = 80;
+    public const double NapSpacing = 170;
+    public Point? NapSpot { get; private set; }
+    private double _caughtFor;
+    public bool CaughtMouse => _caughtFor > 0;
     public Point Position { get; private set; }
-    public Point MousePosition { get; private set; }
-    public Point MouseHolePosition { get; private set; }
-    public double MouseOutwardDirection { get; private set; }
-    public double MouseTravel { get; private set; }
-    public bool MouseVisible => _mouseFor > 0;
     public CatMood Mood { get; private set; } = CatMood.Idle;
     public double MoodTime { get; private set; }
     public double Facing { get; private set; } = 1;
@@ -48,17 +45,23 @@ internal sealed class CatBehavior
                 area.Bottom - Height - 12 - (slot % 2) * 100), area);
         _napIn += slot * 7;
         _target = Position;
-        _mouseIn = 12 + _random.NextDouble() * 10;
     }
 
-    public void Step(double seconds, Rect area, Point cursor)
+    public void Step(double seconds, Rect area, Point cursor, IReadOnlyList<CatBehavior>? companions = null, ToyMouseBehavior? mouse = null)
     {
         // A suspended/resumed UI must not leap through minutes of simulated movement.
         var dt = Math.Clamp(seconds, 0, .05);
         if (dt == 0) return;
         MoodTime += dt;
+        _caughtFor = Math.Max(0, _caughtFor - dt);
         if (Mood is not (CatMood.LyingDown or CatMood.Sleeping or CatMood.Waking)) _napIn -= dt;
         Position = Clamp(Position, area);
+        if (NapSpot is Point reserved && Clamp(reserved, area) != reserved)
+        {
+            NapSpot = null;
+            _goingToBed = false;
+            GoToBed(area, companions);
+        }
         var excited = _cursor.Observe(cursor, dt);
         _chaseFor = ChaseCursor ? Math.Max(0, _chaseFor - dt) : 0;
         if (ChaseCursor && excited && area.Contains(cursor))
@@ -71,37 +74,12 @@ internal sealed class CatBehavior
             }
             else if (Mood != CatMood.Waking) Change(CatMood.CursorChase);
             _goingToBed = false;
+            NapSpot = null;
         }
 
-        if (!PlayfulMouse || _chaseFor > 0)
-        {
-            _mouseFor = 0;
-            _mouseIn = Math.Max(_mouseIn, 10);
-        }
-        else
-        {
-            _mouseIn -= dt;
-            if (_mouseIn <= 0 && _napIn > 12 && !_goingToBed && !MouseVisible && Mood is not (CatMood.Sleeping or CatMood.LyingDown or CatMood.Waking))
-            {
-                StartMouseVisit(area);
-            }
-        }
-        if (MouseVisible)
-        {
-            _mouseElapsed += dt;
-            _mouseFor = Math.Max(0, _mouseFor - dt);
-            // A short, horizontal excursion: reveal the hole, emerge, sniff, return,
-            // then leave the empty hole visible briefly. The toy never teleports away.
-            var legTime = (MouseTravel + 40) / MouseSpeed;
-            var elapsed = _mouseElapsed - 1;
-            var distance = elapsed < 0 ? -40
-                : elapsed < legTime ? -40 + elapsed * MouseSpeed
-                : elapsed < legTime + 1.5 ? MouseTravel
-                : Math.Max(-40, MouseTravel - (elapsed - legTime - 1.5) * MouseSpeed);
-            MousePosition = MouseHolePosition + new Vector(MouseOutwardDirection * distance, 0);
-            // A display reconfiguration invalidates the old hole coordinates.
-            if (area != _mouseArea) _mouseFor = 0;
-        }
+        var followMouse = PlayfulMouse && mouse?.IsCatchable == true && _chaseFor <= 0 && _napIn > 0
+            && !_goingToBed && _caughtFor <= 0 && Mood is not (CatMood.Sleeping or CatMood.LyingDown or CatMood.Waking or CatMood.Grooming);
+        if (followMouse) Change(CatMood.MouseChase);
 
         if (Mood == CatMood.CursorChase)
         {
@@ -110,19 +88,20 @@ internal sealed class CatBehavior
         }
         if (Mood == CatMood.MouseChase)
         {
-            if (!MouseVisible) { Change(CatMood.Sitting); _decisionIn = 3; }
-            // Stalk the far end of the mouse's excursion, leaving room for its
-            // unhurried return. Do not race through the mouse or into its hole.
-            else _target = Clamp(MouseHolePosition + new Vector(MouseOutwardDirection * (MouseTravel + 190), 0)
-                - new Vector(Width / 2, Height * .68), area);
+            if (!followMouse) { Change(CatMood.Sitting); _decisionIn = 3; }
+            else
+            {
+                _target = Clamp(mouse!.Position - new Vector(Width / 2, Height * .68), area);
+            }
         }
-        if (_napIn <= 0 && !MouseVisible && _chaseFor <= 0 && !_goingToBed && Mood is not (CatMood.LyingDown or CatMood.Sleeping or CatMood.Waking)) GoToBed(area);
+        if (_napIn <= 0 && _chaseFor <= 0 && !_goingToBed && Mood is not (CatMood.LyingDown or CatMood.Sleeping or CatMood.Waking)) GoToBed(area, companions);
         if (Mood == CatMood.LyingDown && MoodTime >= 5) { Change(CatMood.Sleeping); _decisionIn = 30 + _random.NextDouble() * 15; }
         else if (Mood == CatMood.Waking && MoodTime >= 2)
         {
             if (_wakeForCursor && ChaseCursor && _chaseFor > 0) Change(CatMood.CursorChase);
             else Rest();
             _wakeForCursor = false;
+            NapSpot = null;
             _napIn = 60 + _random.NextDouble() * 30;
         }
         else if (Mood is CatMood.Idle or CatMood.Sitting or CatMood.Grooming or CatMood.Sleeping)
@@ -135,13 +114,52 @@ internal sealed class CatBehavior
             }
         }
 
-        var moving = Mood is CatMood.Walking or CatMood.CursorChase or CatMood.MouseChase;
+        // Social visits yield to naps, cursor play and toys. Follow a live companion,
+        // then pause facing them before returning to independent roaming.
+        _socialIn -= dt;
+        if (Mood is not (CatMood.SocialApproach or CatMood.Sitting)) _friend = null;
+        if (_friend is not null && (companions is null || !companions.Contains(_friend)))
+        {
+            _friend = null;
+            if (Mood == CatMood.SocialApproach) Rest();
+        }
+        if (_socialIn <= 0 && !_goingToBed && _napIn > 12 && Mood is (CatMood.Idle or CatMood.Walking))
+        {
+            _socialIn = 15 + _random.NextDouble() * 10;
+            _friend = companions?.Where(cat => cat != this && cat.Mood is not (CatMood.Sleeping or CatMood.LyingDown or CatMood.Waking))
+                .OrderBy(cat => (cat.Position - Position).Length).FirstOrDefault();
+            if (_friend is not null) Change(CatMood.SocialApproach);
+        }
+        if (Mood == CatMood.SocialApproach && _friend is not null)
+        {
+            if (_friend.Mood is CatMood.Sleeping or CatMood.LyingDown or CatMood.Waking)
+            {
+                _friend = null;
+                Rest();
+            }
+            else
+            {
+                var offset = Position - _friend.Position;
+                if (offset.Length < 1) offset = new Vector(1, 0);
+                offset.Normalize();
+                _target = Clamp(_friend.Position + offset * 185, area);
+                if ((Position - _friend.Position).Length < 205)
+                {
+                    Change(CatMood.Sitting);
+                    _decisionIn = 2.5;
+                }
+                else if (MoodTime > 8) { _friend = null; Rest(); }
+            }
+        }
+        if (Greeting) Facing = _friend!.Position.X > Position.X ? -1 : 1;
+        var moving = Mood is CatMood.Walking or CatMood.CursorChase or CatMood.MouseChase or CatMood.SocialApproach;
         var delta = _target - Position;
-        var limit = Mood == CatMood.CursorChase ? 285d : Mood == CatMood.MouseChase ? 70d : 120d;
+        var limit = Mood == CatMood.CursorChase ? 285d : Mood == CatMood.MouseChase ? 260d : 120d;
         var desired = moving && delta.Length > 1 ? delta / delta.Length * Math.Min(limit, delta.Length * 3) : new Vector();
         _velocity += (desired - _velocity) * (1 - Math.Exp(-9 * dt));
         if (!moving) _velocity = new Vector();
         Position = Clamp(Position + _velocity * dt, area);
+        if (Mood == CatMood.MouseChase) mouse?.TryCatch(this);
         if (Math.Abs(_velocity.X) > 2) Facing = _velocity.X > 0 ? -1 : 1;
         if (Mood == CatMood.Walking && delta.Length < 3 && _velocity.Length < 10)
         {
@@ -164,19 +182,47 @@ internal sealed class CatBehavior
         }
     }
 
-    private void GoToBed(Rect area)
+    private void GoToBed(Rect area, IReadOnlyList<CatBehavior>? companions)
     {
+        var occupied = companions?.Where(cat => cat != this && cat.NapSpot.HasValue)
+            .Select(cat => Clamp(cat.NapSpot!.Value, area)).ToArray() ?? [];
+        // Reserve before walking so cats choosing a bed on the next frame cannot
+        // choose the same place. Prefer napping right here, then nearby spots.
+        var candidates = new List<Point> { Position };
+        for (var radius = NapSpacing; radius <= Math.Max(area.Width, area.Height) + NapSpacing; radius += NapSpacing)
+            for (var angle = 0; angle < 16; angle++)
+                candidates.Add(Clamp(Position + new Vector(Math.Cos(angle * Math.Tau / 16), Math.Sin(angle * Math.Tau / 16)) * radius, area));
+        var spot = candidates.Distinct().Where(point => occupied.All(other => (point - other).Length >= NapSpacing - .01))
+            .Select(point => (Point?)point).FirstOrDefault();
+        if (spot is not Point bed)
+        {
+            // A tiny display may not have room for all cats to nap at once.
+            NapSpot = null;
+            _goingToBed = false;
+            Rest();
+            _napIn = 2;
+            return;
+        }
+        NapSpot = bed;
+        _target = bed;
         _goingToBed = true;
-        _target = Clamp(new Point(Center.X < area.Left + area.Width / 2 ? area.Left + 8 : area.Right - Width - 8,
-            area.Bottom - Height - 8), area);
         Change(CatMood.Walking);
+    }
+
+    internal void CelebrateCatch()
+    {
+        _caughtFor = 2.5;
+        _friend = null;
+        _velocity = new Vector();
+        Change(CatMood.Sitting);
+        _decisionIn = 3;
     }
 
     internal void PreviewPose(CatMood mood, double dt)
     {
         Change(mood);
         MoodTime += Math.Clamp(dt, 0, .05);
-        _mouseFor = _chaseFor = 0;
+        _chaseFor = 0;
         _velocity = new Vector(mood == CatMood.CursorChase ? 285 : mood == CatMood.Walking ? 120 : 0, 0);
     }
 
@@ -185,33 +231,11 @@ internal sealed class CatBehavior
         _velocity = new Vector();
         _target = Position;
         _goingToBed = false;
+        NapSpot = null;
+        _friend = null;
+        _socialIn = 3;
         _napIn = 40;
         Rest();
-    }
-
-    internal void RequestMousePreview() { _mouseIn = .1; _napIn = 90; }
-
-    private void StartMouseVisit(Rect area)
-    {
-        _mouseIn = 35 + _random.NextDouble() * 20;
-        if (area.Width < 700 || area.Height < Height) return;
-        // Try random desktop locations, reserving space between the excursion and
-        // the cat. Holes are decorative overlays, not restricted to screen edges.
-        for (var attempt = 0; attempt < 20; attempt++)
-        {
-            MouseHolePosition = new Point(area.Left + 72 + _random.NextDouble() * (area.Width-144),
-                area.Top + 80 + _random.NextDouble() * Math.Max(1, area.Height-140));
-            MouseOutwardDirection = Center.X > MouseHolePosition.X ? 1 : -1;
-            MouseTravel = Math.Min(420 + _random.NextDouble()*220, Math.Abs(Center.X-MouseHolePosition.X)-220);
-            if (MouseTravel >= Math.Min(340, area.Width*.28)) break;
-        }
-        // Do not spawn a toy where there is no room for both animals to stay apart.
-        if (MouseTravel < 200) return;
-        _mouseArea = area;
-        _mouseElapsed = 0;
-        _mouseFor = 1 + 2 * (MouseTravel + 40) / MouseSpeed + 1.5 + 1;
-        MousePosition = MouseHolePosition - new Vector(MouseOutwardDirection * 40, 0);
-        Change(CatMood.MouseChase);
     }
 
     private void Rest() { Change(CatMood.Idle); _decisionIn = Math.Clamp(RoamSeconds, 2, 60); }

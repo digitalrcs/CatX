@@ -22,12 +22,15 @@ public partial class MainWindow : Window
     private long? _autoLockMonitoringStartedAt;
     private bool _trayTipShown;
     private bool _loading = true;
-    private bool _previewing;
+    private bool _reviewing;
+    private bool _syncingPicker;
     private readonly bool _reviewOnly = Environment.GetCommandLineArgs().Contains("--review");
 
     public MainWindow()
     {
         InitializeComponent();
+        PreviewMouseDown += MainWindow_PreviewMouseDown;
+        Deactivated += MainWindow_Deactivated;
         _settings = _reviewOnly ? new AppSettings { CatStyle = "Realistic Tabby", CatCount = 3,
             AdditionalCatStyles = ["Calico", "Midnight"] } : _settingsService.Load();
         LoadSettingsIntoControls();
@@ -40,23 +43,21 @@ public partial class MainWindow : Window
         if (_reviewOnly)
         {
             Title = "CatX animation review - keyboard guard disabled";
-            Loaded += (_, _) => { PreviewActionCombo.SelectedIndex = 2; PreviewButton_Click(PreviewButton, new RoutedEventArgs()); };
+            Loaded += (_, _) => StartReview();
         }
     }
 
     private void LoadSettingsIntoControls()
     {
-        SelectByContent(CatStyleCombo, _settings.CatStyle);
+        CatPicker.ItemsSource = CatRoster.Styles;
         SelectByTag(UnlockCombo, _settings.UnlockChord.ToString());
         SelectByTag(RoamCombo, _settings.RoamEverySeconds.ToString());
         SelectByTag(AutoLockCombo, _settings.AutoLockAfterSeconds.ToString());
         ChaseCursorCheck.IsChecked = _settings.ChaseCursor;
         PlayfulMouseCheck.IsChecked = _settings.PlayfulMouse;
-        SelectByContent(CatCountCombo, Math.Clamp(_settings.CatCount, 1, CatRoster.MaximumCats).ToString());
-        BuildAdditionalCatControls();
+        SyncCatPicker();
     }
 
-    private static void SelectByContent(System.Windows.Controls.ComboBox comboBox, string value) => comboBox.SelectedItem = comboBox.Items.OfType<ComboBoxItem>().FirstOrDefault(item => Equals(item.Content, value)) ?? comboBox.Items[0];
     private static void SelectByTag(System.Windows.Controls.ComboBox comboBox, string value) => comboBox.SelectedItem = comboBox.Items.OfType<ComboBoxItem>().FirstOrDefault(item => Equals(item.Tag, value)) ?? comboBox.Items[0];
 
     private void InitializeTrayIcon()
@@ -94,9 +95,7 @@ public partial class MainWindow : Window
 
     private void PreferenceChanged(object sender, SelectionChangedEventArgs e)
     {
-        if (_loading || CatStyleCombo.SelectedItem is not ComboBoxItem cat || UnlockCombo.SelectedItem is not ComboBoxItem unlock || RoamCombo.SelectedItem is not ComboBoxItem roam || AutoLockCombo.SelectedItem is not ComboBoxItem autoLock) return;
-        _settings.CatStyle = cat.Content?.ToString() ?? "Marmalade";
-        BuildAdditionalCatControls();
+        if (_loading || UnlockCombo.SelectedItem is not ComboBoxItem unlock || RoamCombo.SelectedItem is not ComboBoxItem roam || AutoLockCombo.SelectedItem is not ComboBoxItem autoLock) return;
         _settings.UnlockChord = Enum.Parse<UnlockChord>(unlock.Tag?.ToString() ?? nameof(UnlockChord.CtrlAltK));
         _settings.RoamEverySeconds = int.Parse(roam.Tag?.ToString() ?? "8");
         _settings.AutoLockAfterSeconds = int.Parse(autoLock.Tag?.ToString() ?? "0");
@@ -120,24 +119,17 @@ public partial class MainWindow : Window
         ApplyCatPreferences();
     }
 
-    private void PreviewButton_Click(object sender, RoutedEventArgs e)
+    private void StartReview()
     {
-        if (_previewing)
-        {
-            StopPreview();
-            ScheduleAutoLock(true);
-            return;
-        }
+        if (_reviewing) return;
         if (_settings.CatStyle == "No cat" || _keyboardGuard.IsActive) return;
         try
         {
             ShowCats();
-            _previewing = true;
-            ApplyPreviewAction();
+            _reviewing = true;
             // Preview must never unexpectedly lock the keyboard while the user is trying a cat.
             _autoLockTimer.Stop();
             _autoLockMonitoringStartedAt = null;
-            PreviewButton.Content = "Stop preview";
             StatusTitle.Text = "Cat preview";
             StatusDetail.Text = "Your keyboard is active. Wiggle the mouse to play.";
             UpdatePreferenceAvailability(false);
@@ -149,24 +141,12 @@ public partial class MainWindow : Window
         }
     }
 
-    private void StopPreview()
+    private void StopReview()
     {
-        if (!_previewing) return;
+        if (!_reviewing) return;
         CloseCats();
-        _previewing = false;
-        PreviewButton.Content = "Preview cats";
+        _reviewing = false;
         UpdatePreferenceAvailability(false);
-    }
-
-    private void PreviewActionChanged(object sender, SelectionChangedEventArgs e)
-    {
-        if (!_loading && _previewing) ApplyPreviewAction();
-    }
-
-    private void ApplyPreviewAction()
-    {
-        var action = (PreviewActionCombo.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "Natural";
-        foreach (var cat in _overlays) cat.SetPreviewAction(action);
     }
 
     private void MainWindow_StateChanged(object? sender, EventArgs e)
@@ -215,7 +195,7 @@ public partial class MainWindow : Window
     private void EnableGuard()
     {
         if (_reviewOnly) return;
-        StopPreview();
+        StopReview();
         try
         {
             _autoLockTimer.Stop();
@@ -258,11 +238,10 @@ public partial class MainWindow : Window
 
     private void UpdatePreferenceAvailability(bool locked)
     {
-        CatStyleCombo.IsEnabled = UnlockCombo.IsEnabled = AutoLockCombo.IsEnabled = !locked && !_previewing;
-        CatCountCombo.IsEnabled = AdditionalCatsPanel.IsEnabled = !locked && !_previewing && _settings.CatStyle != "No cat";
-        RoamCombo.IsEnabled = !locked && !_previewing && _settings.CatStyle != "No cat";
-        PreviewButton.IsEnabled = !locked && _settings.CatStyle != "No cat";
-        PreviewActionCombo.IsEnabled = !locked && _settings.CatStyle != "No cat";
+        CatPickerButton.IsEnabled = CatPicker.IsEnabled = !locked && !_reviewing;
+        if (!CatPickerButton.IsEnabled) CatPickerPopup.IsOpen = false;
+        UnlockCombo.IsEnabled = AutoLockCombo.IsEnabled = !locked && !_reviewing;
+        RoamCombo.IsEnabled = !locked && !_reviewing && _settings.CatStyle != "No cat";
         GuardButton.IsEnabled = !_reviewOnly;
         if (_reviewOnly) UnlockCombo.IsEnabled = AutoLockCombo.IsEnabled = false;
         ChaseCursorCheck.IsEnabled = PlayfulMouseCheck.IsEnabled = _settings.CatStyle != "No cat";
@@ -272,7 +251,7 @@ public partial class MainWindow : Window
     {
         _autoLockTimer.Stop();
         _autoLockMonitoringStartedAt = null;
-        if (_keyboardGuard.IsActive || _previewing || _reviewOnly) return;
+        if (_keyboardGuard.IsActive || _reviewing || _reviewOnly) return;
         if (_settings.AutoLockAfterSeconds <= 0)
         {
             if (updateIdleStatus)
@@ -359,48 +338,87 @@ public partial class MainWindow : Window
         base.OnClosing(e);
     }
 
-    private void CatCountChanged(object sender, SelectionChangedEventArgs e)
+    private void SyncCatPicker()
     {
-        if (_loading || CatCountCombo.SelectedItem is not ComboBoxItem item) return;
-        _settings.CatCount = int.Parse(item.Content.ToString()!);
-        BuildAdditionalCatControls();
-        SaveSettings();
+        _syncingPicker = true;
+        try
+        {
+            var roster = CatRoster.Resolve(_settings);
+            var styles = roster.Select(cat => cat.CatStyle).Distinct().ToArray();
+            // Preserve the keyboard focus and range-selection anchor on ordinary clicks.
+            if (!styles.ToHashSet().SetEquals(CatPicker.SelectedItems.Cast<string>()))
+            {
+                CatPicker.SelectedItems.Clear();
+                foreach (var style in styles) CatPicker.SelectedItems.Add(style);
+            }
+            CatSelectionSummary.Text = roster.Count == 0 ? "No cats" : string.Join(", ", roster.Select(cat => cat.CatStyle));
+            CatSelectionHint.Text = "Ctrl-click names to select multiple cats.";
+        }
+        finally { _syncingPicker = false; }
     }
 
-    private void BuildAdditionalCatControls()
+    private void CatPickerChanged(object sender, SelectionChangedEventArgs e)
     {
-        AdditionalCatsPanel.Children.Clear();
-        _settings.AdditionalCatStyles ??= [];
-        var roster = CatRoster.Resolve(_settings);
-        for (var i = 1; i < roster.Count; i++)
+        if (_loading || _syncingPicker) return;
+        var selected = CatPicker.SelectedItems.Cast<string>().ToArray();
+        if (selected.Length > CatRoster.MaximumCats)
         {
-            var slot = i-1;
-            var row = new DockPanel { Margin = new Thickness(0, 0, 0, 5) };
-            row.Children.Add(new TextBlock { Text = $"Cat {i+1}", Width = 48, VerticalAlignment = VerticalAlignment.Center });
-            var combo = new System.Windows.Controls.ComboBox { ItemsSource = CatRoster.Styles, SelectedItem = roster[i].CatStyle };
-            combo.SelectionChanged += (_, _) =>
-            {
-                while (_settings.AdditionalCatStyles.Count <= slot) _settings.AdditionalCatStyles.Add(CatRoster.Styles[(_settings.AdditionalCatStyles.Count+1)%CatRoster.Styles.Length]);
-                _settings.AdditionalCatStyles[slot] = (string)combo.SelectedItem;
-                SaveSettings();
-            };
-            row.Children.Add(combo);
-            AdditionalCatsPanel.Children.Add(row);
+            SyncCatPicker();
+            CatSelectionHint.Text = "Choose up to 8 cats. Your previous selection is kept.";
+            return;
         }
+        CatRoster.SelectStyles(_settings, selected);
+        _loading = true;
+        try { LoadSettingsIntoControls(); }
+        finally { _loading = false; }
+        SaveSettings();
+        UpdatePreferenceAvailability(_keyboardGuard.IsActive);
+    }
+
+    private void CatPickerButton_Click(object sender, RoutedEventArgs e)
+    {
+        // One owner for the dropdown state. Popup auto-dismissal used to close it
+        // before the toggle processed the very same arrow click and reopened it.
+        CatPickerPopup.IsOpen = !CatPickerPopup.IsOpen;
+    }
+
+    private void MainWindow_PreviewMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    {
+        if (!CatPickerPopup.IsOpen) return;
+        if (e.OriginalSource is Visual source &&
+            (source == CatPickerButton || CatPickerButton.IsAncestorOf(source) ||
+             source == CatPickerPopup.Child || CatPickerPopup.Child.IsAncestorOf(source))) return;
+        CatPickerPopup.IsOpen = false;
+    }
+
+    private void MainWindow_Deactivated(object? sender, EventArgs e) => CatPickerPopup.IsOpen = false;
+
+    private void CatPickerOpened(object? sender, EventArgs e) => CatPicker.Focus();
+
+    private void ClearCats_Click(object sender, RoutedEventArgs e) => CatPicker.SelectedItems.Clear();
+
+    private void CatPickerKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+    {
+        if (e.Key != System.Windows.Input.Key.Escape) return;
+        CatPickerPopup.IsOpen = false;
+        CatPickerButton.Focus();
+        e.Handled = true;
     }
 
     private void ShowCats()
     {
         CloseCats();
         var roster = CatRoster.Resolve(_settings);
+        var mouse = new ToyMouseBehavior();
         try
         {
             for (var i = 0; i < roster.Count; i++)
             {
-                var overlay = new CatOverlayWindow(roster[i], i, roster.Count);
+                var overlay = new CatOverlayWindow(roster[i], i, roster.Count, mouse);
                 _overlays.Add(overlay);
                 overlay.Show();
             }
+            foreach (var overlay in _overlays) overlay.SetCompanions(_overlays);
         }
         catch { CloseCats(); throw; }
     }

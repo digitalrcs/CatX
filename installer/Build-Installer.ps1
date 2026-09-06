@@ -9,7 +9,7 @@ $repoRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot ".."))
 $project = Join-Path $repoRoot "src\CatX\CatX.csproj"
 $solution = Join-Path $repoRoot "CatX.sln"
 $publishDir = Join-Path $repoRoot "publish\CatX"
-$guide = Join-Path $repoRoot "output\pdf\CatX-User-Guide-v1.0.3.pdf"
+$guide = Join-Path $repoRoot "output\pdf\CatX-User-Guide-v1.2.0.pdf"
 $installerScript = Join-Path $PSScriptRoot "CatX.iss"
 $packageReadme = Join-Path $PSScriptRoot "PACKAGE_README.txt"
 
